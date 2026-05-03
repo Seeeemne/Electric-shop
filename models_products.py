@@ -3,14 +3,35 @@ from models import Product, Category
 
 
 def get_all_products():
-    return Product.query.order_by(Product.id.asc()).all()
+    return Product.query.order_by(Product.id.desc()).all()
 
 
-def get_filtered_products(search="", category="", in_stock=False, min_price=None, max_price=None, sort="default"):
+def get_product_by_id(product_id):
+    return db.session.get(Product, product_id)
+
+
+def get_filtered_products(
+    search="",
+    category="",
+    in_stock=False,
+    min_price=None,
+    max_price=None,
+    sort="default",
+):
     query = Product.query
 
     if search:
-        query = query.filter(Product.name.ilike(f"%{search}%"))
+        search_pattern = f"%{search}%"
+
+        query = query.filter(
+            db.or_(
+                Product.name.ilike(search_pattern),
+                Product.description.ilike(search_pattern),
+                Product.full_description.ilike(search_pattern),
+                Product.brand.ilike(search_pattern),
+                Product.article.ilike(search_pattern),
+            )
+        )
 
     if category:
         query = query.filter(Product.category == category)
@@ -31,16 +52,31 @@ def get_filtered_products(search="", category="", in_stock=False, min_price=None
     elif sort == "name_asc":
         query = query.order_by(Product.name.asc())
     else:
-        query = query.order_by(Product.id.asc())
+        query = query.order_by(Product.id.desc())
 
     return query.all()
 
 
-def get_admin_filtered_products(search="", category="", in_stock=False, sort="default"):
+def get_admin_filtered_products(
+    search="",
+    category="",
+    in_stock=False,
+    sort="default",
+):
     query = Product.query
 
     if search:
-        query = query.filter(Product.name.ilike(f"%{search}%"))
+        search_pattern = f"%{search}%"
+
+        query = query.filter(
+            db.or_(
+                Product.name.ilike(search_pattern),
+                Product.description.ilike(search_pattern),
+                Product.full_description.ilike(search_pattern),
+                Product.brand.ilike(search_pattern),
+                Product.article.ilike(search_pattern),
+            )
+        )
 
     if category:
         query = query.filter(Product.category == category)
@@ -62,11 +98,18 @@ def get_admin_filtered_products(search="", category="", in_stock=False, sort="de
     return query.all()
 
 
-def get_product_by_id(product_id):
-    return db.session.get(Product, product_id)
-
-
-def add_product(name, category, brand, price, old_price, stock, article, description, full_description, image):
+def add_product(
+    name,
+    category,
+    brand,
+    price,
+    old_price,
+    stock,
+    article,
+    description,
+    full_description,
+    image,
+):
     category_obj = Category.query.filter(Category.name == category).first()
 
     product = Product(
@@ -89,10 +132,23 @@ def add_product(name, category, brand, price, old_price, stock, article, descrip
     return product.id
 
 
-def update_product(product_id, name, category, brand, price, old_price, stock, article, description, full_description, image):
-    product = db.session.get(Product, product_id)
+def update_product(
+    product_id,
+    name,
+    category,
+    brand,
+    price,
+    old_price,
+    stock,
+    article,
+    description,
+    full_description,
+    image,
+):
+    product = get_product_by_id(product_id)
+
     if product is None:
-        return
+        return False
 
     category_obj = Category.query.filter(Category.name == category).first()
 
@@ -109,12 +165,16 @@ def update_product(product_id, name, category, brand, price, old_price, stock, a
     product.image = image
 
     db.session.commit()
+    return True
 
 
 def delete_product(product_id):
-    product = db.session.get(Product, product_id)
+    product = get_product_by_id(product_id)
+
     if product is None:
-        return
+        return False
 
     db.session.delete(product)
     db.session.commit()
+
+    return True

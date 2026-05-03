@@ -89,15 +89,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    min-height: 46px;
     border-radius: 14px;
-    padding: 12px 14px;
-    font-size: 14px;
-    font-weight: 900;
-    line-height: 1.1;
-    text-align: center;
-    white-space: nowrap;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 800;
     transition: 0.2s ease;
     border: none;
     cursor: pointer;
@@ -185,49 +180,12 @@
     z-index: 1;
   }
 
-  .product-content {
-    position: relative;
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .product-actions {
-    position: relative;
-    z-index: 3;
-    pointer-events: auto;
-  }
-
-  .product-actions a,
-  .product-actions span {
-    position: relative;
-    z-index: 4;
-  }
-
-  .card-full-link {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
-
-  .product-actions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    position: relative;
-    z-index: 3;
-    pointer-events: auto;
-  }
-
-  .product-actions a,
-  .product-actions span {
-    position: relative;
-    z-index: 3;
-  }
-
   .product-card img {
     width: 100%;
-    height: 190px;
+    aspect-ratio: 4 / 3;
+    height: auto;
     object-fit: cover;
+    object-position: center;
     background: #e7eef5;
     transition: transform 0.28s ease;
   }
@@ -241,6 +199,9 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
   }
 
   .product-category {
@@ -301,8 +262,29 @@
 
   .product-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 10px;
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
+  }
+
+  .product-actions a,
+  .product-actions span {
+    position: relative;
+    z-index: 4;
+  }
+
+  .card-btn,
+  .card-btn-secondary {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.1;
+    text-align: center;
+    white-space: nowrap;
   }
 
   .card-btn.disabled {
@@ -317,6 +299,7 @@
     border: 1px solid #ececec;
     border-radius: 20px;
     padding: 36px 20px;
+    grid-column: 1 / -1;
   }
 
   .empty-box h3 {
@@ -356,10 +339,9 @@
       grid-template-columns: 1fr;
     }
 
-
-    .card-btn,
-    .card-btn-secondary {
-      width: 100%;
+    .catalog-main-card,
+    .sidebar {
+      padding: 18px;
     }
   }
 </style>
@@ -425,9 +407,16 @@
 
       <section class="catalog-main-card">
         <div class="catalog-toolbar">
-          <form method="get" action="/catalog" class="search-form">
+          <form method="get" action="/catalog" class="search-form" id="catalogSearchForm">
             <div class="search-box">
-              <input type="text" name="search" placeholder="Поиск по названию товара" value="{{ search }}">
+              <input
+                type="text"
+                id="liveSearchInput"
+                name="search"
+                placeholder="Поиск по названию, описанию, бренду или артикулу"
+                value="{{ search }}"
+                autocomplete="off"
+              >
               <button class="search-btn" type="submit">Найти</button>
             </div>
 
@@ -451,8 +440,8 @@
         </div>
 
         <div class="catalog-info">
-          <span>Найдено товаров: {{ products|length }}</span>
-          <span>
+          <span id="productsCount">Найдено товаров: {{ products|length }}</span>
+          <span id="catalogInfoText">
             {% if search %}
               Поиск: "{{ search }}"
             {% elif category %}
@@ -463,15 +452,15 @@
           </span>
         </div>
 
-        {% if products %}
-          <div class="products-grid">
+        <div class="products-grid" id="productsGrid">
+          {% if products %}
             {% for product in products %}
               <article class="product-card">
-                  <a href="/product/{{ product.id }}" class="card-full-link" aria-label="Открыть товар {{ product.name }}"></a>
+                <a href="/product/{{ product.id }}" class="card-full-link" aria-label="Открыть товар {{ product.name }}"></a>
 
-                  <img src="{{ product.image }}" alt="{{ product.name }}">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
 
-                  <div class="product-content">
+                <div class="product-content">
                   <div class="product-category">{{ product.category }}</div>
                   <h3 class="product-title">{{ product.name }}</h3>
                   <p class="product-desc">{{ product.description }}</p>
@@ -500,16 +489,124 @@
                 </div>
               </article>
             {% endfor %}
-          </div>
-        {% else %}
-          <div class="empty-box">
-            <h3>Ничего не найдено</h3>
-            <p>Попробуйте изменить параметры поиска или сбросить фильтры.</p>
-            <a href="/catalog" class="reset-btn">Сбросить фильтры</a>
-          </div>
-        {% endif %}
+          {% else %}
+            <div class="empty-box">
+              <h3>Ничего не найдено</h3>
+              <p>Попробуйте изменить параметры поиска или сбросить фильтры.</p>
+              <a href="/catalog" class="reset-btn">Сбросить фильтры</a>
+            </div>
+          {% endif %}
+        </div>
       </section>
     </section>
   </div>
 </section>
+
+<script>
+  const liveSearchInput = document.getElementById("liveSearchInput");
+  const productsGrid = document.getElementById("productsGrid");
+  const productsCount = document.getElementById("productsCount");
+  const catalogInfoText = document.getElementById("catalogInfoText");
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getProductCard(product) {
+    let stockBadge = "";
+
+    if (product.stock === 0) {
+      stockBadge = `<span class="stock-badge stock-out">Нет в наличии</span>`;
+    } else if (product.stock <= 5) {
+      stockBadge = `<span class="stock-badge stock-low">Мало</span>`;
+    } else {
+      stockBadge = `<span class="stock-badge stock-ok">В наличии</span>`;
+    }
+
+    let cartButton = "";
+
+    if (product.stock > 0) {
+      cartButton = `<a href="/add-to-cart/${product.id}" class="card-btn">В корзину</a>`;
+    } else {
+      cartButton = `<span class="card-btn disabled">Нет товара</span>`;
+    }
+
+    const name = escapeHtml(product.name);
+    const category = escapeHtml(product.category);
+    const description = escapeHtml(product.description);
+    const image = escapeHtml(product.image);
+
+    return `
+      <article class="product-card">
+        <a href="/product/${product.id}" class="card-full-link" aria-label="Открыть товар ${name}"></a>
+
+        <img src="${image}" alt="${name}">
+
+        <div class="product-content">
+          <div class="product-category">${category}</div>
+          <h3 class="product-title">${name}</h3>
+          <p class="product-desc">${description}</p>
+
+          <div class="product-meta">
+            <div class="product-price">${product.price} ₽</div>
+            ${stockBadge}
+          </div>
+
+          <div class="product-actions">
+            <a href="/product/${product.id}" class="card-btn-secondary">Подробнее</a>
+            ${cartButton}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  let searchTimeout = null;
+
+  if (liveSearchInput && productsGrid) {
+    liveSearchInput.addEventListener("input", function () {
+      clearTimeout(searchTimeout);
+
+      searchTimeout = setTimeout(async function () {
+        const searchValue = liveSearchInput.value.trim();
+
+        const params = new URLSearchParams(window.location.search);
+
+        if (searchValue) {
+          params.set("search", searchValue);
+        } else {
+          params.delete("search");
+        }
+
+        const response = await fetch(`/api/products?${params.toString()}`);
+        const data = await response.json();
+
+        productsCount.textContent = `Найдено товаров: ${data.products.length}`;
+
+        if (searchValue) {
+          catalogInfoText.textContent = `Поиск: "${searchValue}"`;
+        } else {
+          catalogInfoText.textContent = "Категория: электроника и аксессуары";
+        }
+
+        if (data.products.length === 0) {
+          productsGrid.innerHTML = `
+            <div class="empty-box">
+              <h3>Ничего не найдено</h3>
+              <p>Попробуйте изменить поисковый запрос.</p>
+            </div>
+          `;
+          return;
+        }
+
+        productsGrid.innerHTML = data.products.map(getProductCard).join("");
+      }, 300);
+    });
+  }
+</script>
 {% endblock %}
