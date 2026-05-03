@@ -304,6 +304,8 @@ def catalog():
         sort=sort,
     )
 
+    all_categories = get_all_categories()
+
     return render_template(
         "catalog.html",
         products=products,
@@ -313,8 +315,8 @@ def catalog():
         in_stock=in_stock,
         min_price=min_price_raw,
         max_price=max_price_raw,
+        all_categories=all_categories,
     )
-
 
 @app.route("/product/<int:product_id>")
 def product(product_id):
