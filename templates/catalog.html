@@ -369,11 +369,12 @@
 
             <select name="category" class="sort-select">
               <option value="">Все категории</option>
-              <option value="Клавиатуры" {% if category == "Клавиатуры" %}selected{% endif %}>Клавиатуры</option>
-              <option value="Мыши" {% if category == "Мыши" %}selected{% endif %}>Мыши</option>
-              <option value="Наушники" {% if category == "Наушники" %}selected{% endif %}>Наушники</option>
-              <option value="Мониторы" {% if category == "Мониторы" %}selected{% endif %}>Мониторы</option>
-              <option value="Аксессуары" {% if category == "Аксессуары" %}selected{% endif %}>Аксессуары</option>
+
+              {% for cat in all_categories %}
+                <option value="{{ cat.name }}" {% if category == cat.name %}selected{% endif %}>
+                  {{ cat.name }}
+                </option>
+              {% endfor %}
             </select>
           </div>
 
