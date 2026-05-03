@@ -75,7 +75,7 @@
   .hint {
     color: #777;
     font-size: 13px;
-    margin-top: 6px;
+    margin-top: 8px;
   }
 
   .message {
@@ -128,6 +128,58 @@
     transform: translateY(-1px);
   }
 
+  .crop-editor {
+    display: none;
+    margin-top: 14px;
+  }
+
+  .crop-area {
+    position: relative;
+    width: 420px;
+    max-width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #eef2f5;
+    border: 1px solid #dde5ec;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .crop-area:active {
+    cursor: grabbing;
+  }
+
+  .crop-area img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    max-width: none;
+    transform-origin: center center;
+    pointer-events: none;
+  }
+
+  .crop-frame {
+    position: absolute;
+    inset: 0;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.10);
+    border-radius: 18px;
+    pointer-events: none;
+  }
+
+  .crop-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .crop-controls .secondary-btn {
+    width: auto;
+    min-width: 48px;
+  }
+
   @media (max-width: 760px) {
     .form-grid {
       grid-template-columns: 1fr;
@@ -146,6 +198,11 @@
     .primary-btn,
     .secondary-btn {
       width: 100%;
+    }
+
+    .crop-controls .secondary-btn {
+      width: auto;
+      flex: 1;
     }
   }
 </style>
@@ -268,7 +325,9 @@
               name="image"
               placeholder="Вставьте URL изображения"
             />
-            <div class="hint">Если загрузить файл ниже, он заменит ссылку.</div>
+            <div class="hint">
+              Если загрузить файл ниже и обрезать его, он будет использоваться вместо ссылки.
+            </div>
           </div>
 
           <div class="form-group full">
@@ -280,6 +339,27 @@
               name="image_file"
               accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
             />
+
+            <input type="hidden" id="cropped_image_data" name="cropped_image_data">
+
+            <div class="crop-editor" id="cropEditor">
+              <div class="crop-area" id="cropArea">
+                <img id="cropImage" src="" alt="Обрезка изображения">
+                <div class="crop-frame" id="cropFrame"></div>
+              </div>
+
+              <div class="crop-controls">
+                <button type="button" class="secondary-btn" id="zoomOutBtn">−</button>
+                <button type="button" class="secondary-btn" id="zoomInBtn">+</button>
+                <button type="button" class="secondary-btn" id="resetCropBtn">Сбросить</button>
+              </div>
+
+              <p class="hint">
+                Перетаскивайте изображение мышкой и используйте кнопки +/− для масштабирования.
+                В карточку товара попадёт область внутри рамки.
+              </p>
+            </div>
+
             <div class="hint">Разрешены: png, jpg, jpeg, webp, gif.</div>
           </div>
 
@@ -315,4 +395,186 @@
     </section>
   </div>
 </section>
+
+<script>
+  const imageInput = document.getElementById("image_file");
+  const croppedInput = document.getElementById("cropped_image_data");
+  const cropEditor = document.getElementById("cropEditor");
+  const cropArea = document.getElementById("cropArea");
+  const cropImage = document.getElementById("cropImage");
+  const zoomInBtn = document.getElementById("zoomInBtn");
+  const zoomOutBtn = document.getElementById("zoomOutBtn");
+  const resetCropBtn = document.getElementById("resetCropBtn");
+
+  let imageLoaded = false;
+  let scale = 1;
+  let offsetX = 0;
+  let offsetY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+
+  function updateCropImage() {
+    cropImage.style.transform =
+      `translate(-50%, -50%) translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+  }
+
+  function resetCrop() {
+    scale = 1;
+    offsetX = 0;
+    offsetY = 0;
+    updateCropImage();
+    updateCroppedData();
+  }
+
+  function updateCroppedData() {
+    if (!imageLoaded) {
+      croppedInput.value = "";
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = 800;
+    canvas.height = 600;
+
+    const areaRect = cropArea.getBoundingClientRect();
+    const imgRect = cropImage.getBoundingClientRect();
+
+    const scaleX = cropImage.naturalWidth / imgRect.width;
+    const scaleY = cropImage.naturalHeight / imgRect.height;
+
+    let sourceX = (areaRect.left - imgRect.left) * scaleX;
+    let sourceY = (areaRect.top - imgRect.top) * scaleY;
+    let sourceW = areaRect.width * scaleX;
+    let sourceH = areaRect.height * scaleY;
+
+    sourceX = Math.max(0, sourceX);
+    sourceY = Math.max(0, sourceY);
+    sourceW = Math.min(cropImage.naturalWidth - sourceX, sourceW);
+    sourceH = Math.min(cropImage.naturalHeight - sourceY, sourceH);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.drawImage(
+      cropImage,
+      sourceX,
+      sourceY,
+      sourceW,
+      sourceH,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    croppedInput.value = canvas.toDataURL("image/png");
+  }
+
+  if (imageInput) {
+    imageInput.addEventListener("change", function () {
+      const file = this.files[0];
+
+      if (!file) {
+        cropEditor.style.display = "none";
+        cropImage.src = "";
+        croppedInput.value = "";
+        imageLoaded = false;
+        return;
+      }
+
+      const imageUrl = URL.createObjectURL(file);
+      cropImage.src = imageUrl;
+      cropEditor.style.display = "block";
+
+      cropImage.onload = function () {
+        imageLoaded = true;
+
+        const areaWidth = cropArea.clientWidth;
+        const areaHeight = cropArea.clientHeight;
+
+        const imageRatio = cropImage.naturalWidth / cropImage.naturalHeight;
+        const areaRatio = areaWidth / areaHeight;
+
+        if (imageRatio > areaRatio) {
+          cropImage.style.height = areaHeight + "px";
+          cropImage.style.width = "auto";
+        } else {
+          cropImage.style.width = areaWidth + "px";
+          cropImage.style.height = "auto";
+        }
+
+        resetCrop();
+      };
+    });
+  }
+
+  cropArea.addEventListener("mousedown", function (event) {
+    if (!imageLoaded) return;
+
+    isDragging = true;
+    startX = event.clientX - offsetX;
+    startY = event.clientY - offsetY;
+  });
+
+  window.addEventListener("mousemove", function (event) {
+    if (!isDragging) return;
+
+    offsetX = event.clientX - startX;
+    offsetY = event.clientY - startY;
+    updateCropImage();
+  });
+
+  window.addEventListener("mouseup", function () {
+    if (!isDragging) return;
+
+    isDragging = false;
+    updateCroppedData();
+  });
+
+  cropArea.addEventListener("touchstart", function (event) {
+    if (!imageLoaded) return;
+
+    const touch = event.touches[0];
+    isDragging = true;
+    startX = touch.clientX - offsetX;
+    startY = touch.clientY - offsetY;
+  });
+
+  window.addEventListener("touchmove", function (event) {
+    if (!isDragging) return;
+
+    const touch = event.touches[0];
+    offsetX = touch.clientX - startX;
+    offsetY = touch.clientY - startY;
+    updateCropImage();
+  });
+
+  window.addEventListener("touchend", function () {
+    if (!isDragging) return;
+
+    isDragging = false;
+    updateCroppedData();
+  });
+
+  zoomInBtn.addEventListener("click", function () {
+    scale += 0.1;
+    updateCropImage();
+    updateCroppedData();
+  });
+
+  zoomOutBtn.addEventListener("click", function () {
+    if (scale > 0.5) {
+      scale -= 0.1;
+      updateCropImage();
+      updateCroppedData();
+    }
+  });
+
+  resetCropBtn.addEventListener("click", function () {
+    resetCrop();
+  });
+</script>
 {% endblock %}

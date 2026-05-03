@@ -1,6 +1,7 @@
 from functools import wraps
 from pathlib import Path
 import uuid
+import base64
 
 from flask import Flask, render_template, abort, session, redirect, url_for, request, jsonify
 from werkzeug.utils import secure_filename
@@ -92,7 +93,33 @@ def save_uploaded_image(file_storage):
     save_path = UPLOAD_FOLDER / unique_name
     file_storage.save(save_path)
 
-    return f"uploads/{unique_name}"
+    return f"/static/uploads/{unique_name}"
+
+
+def save_cropped_image(data_url):
+    if not data_url:
+        return ""
+
+    if "," not in data_url:
+        return ""
+
+    header, encoded = data_url.split(",", 1)
+
+    if "image" not in header:
+        return ""
+
+    try:
+        image_data = base64.b64decode(encoded)
+    except Exception:
+        return ""
+
+    unique_name = f"{uuid.uuid4().hex}.png"
+    save_path = UPLOAD_FOLDER / unique_name
+
+    with open(save_path, "wb") as file:
+        file.write(image_data)
+
+    return f"/static/uploads/{unique_name}"
 
 
 def get_current_user():
@@ -596,8 +623,16 @@ def add_product_page():
 
         image = request.form.get("image", "").strip()
         image_file = request.files.get("image_file")
+        cropped_image_data = request.form.get("cropped_image_data", "").strip()
 
-        if image_file and image_file.filename:
+        if cropped_image_data:
+            cropped_path = save_cropped_image(cropped_image_data)
+
+            if cropped_path:
+                image = cropped_path
+            else:
+                error = "Не удалось сохранить обрезанное изображение."
+        elif image_file and image_file.filename:
             uploaded_path = save_uploaded_image(image_file)
 
             if uploaded_path:
@@ -674,8 +709,16 @@ def edit_product(product_id):
 
         image = request.form.get("image", "").strip()
         image_file = request.files.get("image_file")
+        cropped_image_data = request.form.get("cropped_image_data", "").strip()
 
-        if image_file and image_file.filename:
+        if cropped_image_data:
+            cropped_path = save_cropped_image(cropped_image_data)
+
+            if cropped_path:
+                image = cropped_path
+            else:
+                error = "Не удалось сохранить обрезанное изображение."
+        elif image_file and image_file.filename:
             uploaded_path = save_uploaded_image(image_file)
 
             if uploaded_path:

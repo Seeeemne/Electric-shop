@@ -239,6 +239,24 @@
     display: flex;
     flex-direction: column;
     transition: 0.2s ease;
+    position: relative;
+  }
+
+  .card-full-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .product-actions {
+    position: relative;
+    z-index: 2;
+  }
+
+  .product-actions a,
+  .product-actions span {
+    position: relative;
+    z-index: 3;
   }
 
   .product-card:hover {
@@ -593,8 +611,9 @@
         <div class="products-grid">
           {% for product in products %}
             <article class="product-card">
-              <img src="{{ product.image }}" alt="{{ product.name }}">
+              <a href="/product/{{ product.id }}" class="card-full-link" aria-label="Открыть товар {{ product.name }}"></a>
 
+              <img src="{{ product.image }}" alt="{{ product.name }}">
               <div class="product-content">
                 <div class="product-category">{{ product.category }}</div>
                 <h3 class="product-title">{{ product.name }}</h3>
