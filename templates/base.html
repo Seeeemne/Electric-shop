@@ -93,6 +93,32 @@
             color: white;
             opacity: 0.75;
         }
+        
+        .menu-toggle {
+            display: none;
+        }
+
+        .menu-button {
+            display: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+          .menu-button span {
+            width: 22px;
+            height: 2px;
+            background: white;
+            border-radius: 999px;
+            display: block;
+        }
 
         .page-hero {
             padding: 48px 0 10px;
@@ -214,13 +240,40 @@
 
         @media (max-width: 860px) {
             .navbar {
-                align-items: flex-start;
-                flex-direction: column;
+                position: relative;
+                align-items: center;
+                flex-direction: row;
+            }
+
+            .menu-button {
+                display: flex;
             }
 
             .nav-links {
-                justify-content: flex-start;
-                gap: 14px;
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: rgba(20, 34, 50, 0.96);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                border-radius: 18px;
+                padding: 16px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                z-index: 50;
+                box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
+            }
+
+            .nav-links a {
+                padding: 12px 14px;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+            .menu-toggle:checked ~ .nav-links {
+                display: flex;
             }
         }
 
@@ -241,6 +294,53 @@
                 padding-top: 34px;
             }
         }
+
+
+            img {
+                max-width: 100%;
+            }
+
+            table {
+                max-width: 100%;
+            }
+
+
+        @media (max-width: 920px) {
+            .page-title {
+                font-size: 38px;
+            }
+
+            .page-subtitle {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                font-size: 15px;
+            }
+
+            .page-title {
+                font-size: 32px;
+            }
+
+            .page-subtitle {
+                font-size: 15px;
+            }
+
+            footer {
+                padding: 46px 0 28px;
+                margin-top: 50px;
+            }
+
+            .footer-brand h3 {
+                font-size: 28px;
+            }
+
+            .footer-column h4 {
+                font-size: 18px;
+            }
+        }
     </style>
 
     {% block extra_head %}{% endblock %}
@@ -251,6 +351,14 @@
         <div class="container">
             <header class="navbar">
                 <a href="/" class="logo">Кулон</a>
+
+                <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+                <label for="menu-toggle" class="menu-button" aria-label="Открыть меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
 
                 <nav class="nav-links">
                     <a href="/">Главная</a>
