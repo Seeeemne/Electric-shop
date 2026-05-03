@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+
+{% block title %}Заказы — панель администратора{% endblock %}
+
+{% block extra_head %}
+<style>
+  .admin-page {
+    padding: 42px 0 80px;
+  }
+
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .admin-sidebar,
+  .admin-main,
+  .stats-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+  }
+
+  .admin-sidebar {
+    padding: 24px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eef5ff;
+    color: #315b8b;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .admin-sidebar h2 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .admin-sidebar p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .sidebar-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sidebar-menu a {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    font-weight: 700;
+    color: #222;
+    transition: 0.2s ease;
+  }
+
+  .sidebar-menu a.active {
+    background: #111;
+    color: white;
+    border-color: #111;
+  }
+
+  .sidebar-menu a:hover {
+    transform: translateY(-1px);
+  }
+
+  .admin-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .stats-card {
+    padding: 22px;
+  }
+
+  .stats-label {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .stats-value {
+    font-size: 32px;
+    font-weight: 900;
+  }
+
+  .admin-main {
+    padding: 24px;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar h2 {
+    font-size: 30px;
+    font-weight: 800;
+  }
+
+  .toolbar-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .secondary-btn,
+  .small-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-weight: 800;
+    transition: 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .secondary-btn {
+    background: #eef2f5;
+    color: #111;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .small-btn {
+    background: #111;
+    color: white;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .secondary-btn:hover,
+  .small-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 920px;
+  }
+
+  th,
+  td {
+    padding: 16px 14px;
+    border-bottom: 1px solid #ececec;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    color: #666;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    font-size: 15px;
+  }
+
+  .order-id {
+    font-size: 18px;
+    font-weight: 900;
+  }
+
+  .order-subtext {
+    color: #666;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .status-new {
+    background: #eef5ff;
+    color: #315b8b;
+  }
+
+  .status-process {
+    background: #fff5e7;
+    color: #b56d00;
+  }
+
+  .status-done {
+    background: #edf8ef;
+    color: #207a35;
+  }
+
+  .status-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .status-select {
+    border: 1px solid #dddddd;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .status-select:focus {
+    border-color: #8aa5bf;
+    background: white;
+  }
+
+  .order-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .empty-row {
+    text-align: center;
+    color: #666;
+    padding: 30px;
+  }
+
+  .bottom-note {
+    color: #666;
+    font-size: 14px;
+    margin-top: 18px;
+  }
+
+  @media (max-width: 1120px) {
+    .admin-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+      position: static;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .admin-sidebar,
+    .admin-main,
+    .stats-card {
+      padding: 20px;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Заказы магазина</h1>
+  <p class="page-subtitle">
+    Просматривайте оформленные заказы и меняйте их статус. При переводе заказа в «Выполнен» остатки товаров уменьшаются.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+  <div class="container">
+    <section class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-badge">● Панель администратора</div>
+
+        <h2>Управление магазином</h2>
+        <p>Раздел для просмотра заказов, проверки оплаты и изменения статусов.</p>
+
+        <ul class="sidebar-menu">
+          <li><a href="/admin/products">Товары</a></li>
+          <li><a href="/admin/products/add">Добавить товар</a></li>
+          <li><a href="/admin/categories">Категории</a></li>
+          <li><a href="/admin/categories/add">Добавить категорию</a></li>
+          <li><a href="/admin/orders" class="active">Заказы</a></li>
+          <li><a href="/admin/users">Пользователи</a></li>
+          <li><a href="/profile">Профиль</a></li>
+        </ul>
+      </aside>
+
+      <div class="admin-content">
+        <section class="stats-grid">
+          <article class="stats-card">
+            <div class="stats-label">Всего заказов</div>
+            <div class="stats-value">{{ stats.total_orders }}</div>
+          </article>
+
+          <article class="stats-card">
+            <div class="stats-label">Новые</div>
+            <div class="stats-value">{{ stats.new_orders }}</div>
+          </article>
+
+          <article class="stats-card">
+            <div class="stats-label">В обработке</div>
+            <div class="stats-value">{{ stats.processing_orders }}</div>
+          </article>
+
+          <article class="stats-card">
+            <div class="stats-label">Выполнены</div>
+            <div class="stats-value">{{ stats.done_orders }}</div>
+          </article>
+        </section>
+
+        <section class="admin-main">
+          <div class="toolbar">
+            <h2>Список заказов</h2>
+
+            <div class="toolbar-actions">
+              <a href="/admin/orders" class="secondary-btn">Обновить</a>
+              <a href="/catalog" class="secondary-btn">Открыть каталог</a>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Заказ</th>
+                  <th>Покупатель</th>
+                  <th>Дата</th>
+                  <th>Сумма</th>
+                  <th>Оплата</th>
+                  <th>Текущий статус</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% if orders %}
+                  {% for order in orders %}
+                    <tr>
+                      <td>
+                        <div class="order-id">#{{ order.id }}</div>
+                        <div class="order-subtext">{{ order.items_count }} товар(а)</div>
+                      </td>
+
+                      <td>
+                        {{ order.customer_name }}
+                        <div class="order-subtext">{{ order.customer_email }}</div>
+                      </td>
+
+                      <td>{{ order.created_at }}</td>
+                      <td>{{ order.total_amount }} ₽</td>
+
+                      <td>
+                        {% if order.payment_type == "online" %}
+                          Онлайн
+                        {% elif order.payment_type == "cash" %}
+                          При получении
+                        {% else %}
+                          {{ order.payment_type }}
+                        {% endif %}
+                      </td>
+
+                      <td>
+                        {% if order.status == "done" %}
+                          <span class="status status-done">● Выполнен</span>
+                        {% elif order.status == "processing" %}
+                          <span class="status status-process">● В обработке</span>
+                        {% else %}
+                          <span class="status status-new">● Новый</span>
+                        {% endif %}
+                      </td>
+
+                      <td>
+                        <div class="order-actions">
+                          <a href="/admin/orders/{{ order.id }}" class="small-btn">Открыть</a>
+
+                          <form method="post" action="/admin/orders/status/{{ order.id }}" class="status-form">
+                            <select name="status" class="status-select">
+                              <option value="new" {% if order.status == "new" %}selected{% endif %}>Новый</option>
+                              <option value="processing" {% if order.status == "processing" %}selected{% endif %}>В обработке</option>
+                              <option value="done" {% if order.status == "done" %}selected{% endif %}>Выполнен</option>
+                            </select>
+
+                            <button type="submit" class="small-btn">Сохранить</button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="7" class="empty-row">Заказов пока нет.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+
+          <p class="bottom-note">
+            Найдено заказов: {{ orders|length }}. Статусы: новый, в обработке, выполнен.
+          </p>
+        </section>
+      </div>
+    </section>
+  </div>
+</section>
+{% endblock %}

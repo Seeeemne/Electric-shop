@@ -1,0 +1,714 @@
+{% extends "base.html" %}
+
+{% block title %}Кулон — интернет-магазин электроники{% endblock %}
+
+{% block extra_head %}
+<style>
+  .home-page {
+    padding: 42px 0 80px;
+  }
+
+  .hero-home {
+    padding: 46px 0 20px;
+  }
+
+  .hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 0.95fr;
+    gap: 42px;
+    align-items: center;
+  }
+
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    padding: 10px 14px;
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 22px;
+  }
+
+  .hero-home-title {
+    font-size: clamp(42px, 7vw, 72px);
+    line-height: 1.02;
+    font-weight: 900;
+    color: white;
+    max-width: 820px;
+    margin: 0;
+  }
+
+  .hero-home-subtitle {
+    margin-top: 22px;
+    max-width: 660px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 19px;
+  }
+
+  .hero-buttons {
+    margin-top: 32px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn-main,
+  .btn-secondary,
+  .dark-button,
+  .outline-button,
+  .card-btn,
+  .card-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+    padding: 14px 24px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 900;
+    transition: 0.2s ease;
+  }
+
+  .btn-main {
+    background: #ffffff;
+    color: #111;
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+  }
+
+  .dark-button,
+  .card-btn {
+    background: #111;
+    color: white;
+  }
+
+  .outline-button,
+  .card-btn-secondary {
+    background: #eef2f5;
+    color: #111;
+  }
+
+  .btn-main:hover,
+  .btn-secondary:hover,
+  .dark-button:hover,
+  .outline-button:hover,
+  .card-btn:hover,
+  .card-btn-secondary:hover {
+    transform: translateY(-1px);
+  }
+
+  .hero-card {
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 30px;
+    padding: 18px;
+    box-shadow: 0 22px 44px rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-card img {
+    width: 100%;
+    height: 430px;
+    object-fit: cover;
+    border-radius: 22px;
+    display: block;
+    background: #dfeaf2;
+  }
+
+  .hero-stats {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .hero-stat {
+    background: white;
+    color: #111;
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .hero-stat strong {
+    display: block;
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 3px;
+  }
+
+  .hero-stat span {
+    color: #666;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 18px;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .section-subtitle {
+    color: #666;
+    font-size: 17px;
+    max-width: 680px;
+  }
+
+  .categories-section,
+  .products-section,
+  .promo-section,
+  .advantages-section,
+  .brands-section {
+    margin-top: 70px;
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+  }
+
+  .category-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+    padding: 24px;
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.2s ease;
+  }
+
+  .category-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .category-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    background: #eef5ff;
+    color: #315b8b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 18px;
+  }
+
+  .category-card h3 {
+    font-size: 21px;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .category-card p {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    transition: 0.2s ease;
+  }
+
+  .product-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    background: #e7eef5;
+  }
+
+  .product-content {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .product-category {
+    color: #6b7f95;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .product-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .product-desc {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .product-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .product-price {
+    font-size: 22px;
+    font-weight: 900;
+  }
+
+  .stock-badge {
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .stock-ok {
+    background: #edf8ef;
+    color: #207a35;
+  }
+
+  .stock-low {
+    background: #fff8e6;
+    color: #9a6a00;
+  }
+
+  .stock-out {
+    background: #fff1f1;
+    color: #b23a3a;
+  }
+
+  .product-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .card-btn,
+  .card-btn-secondary {
+    min-width: auto;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .card-btn.disabled {
+    background: #d8dde3;
+    color: #777;
+    pointer-events: none;
+  }
+
+  .promo-card {
+    background:
+      radial-gradient(circle at top right, #aee8ff 0%, rgba(174, 232, 255, 0.5) 24%, transparent 46%),
+      linear-gradient(135deg, #74839d 0%, #8aa5bf 55%, #d2ebf7 100%);
+    border-radius: 30px;
+    color: white;
+    padding: 46px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .promo-card h2 {
+    font-size: clamp(32px, 5vw, 54px);
+    line-height: 1.05;
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+
+  .promo-card p {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 18px;
+    max-width: 620px;
+    margin-bottom: 26px;
+  }
+
+  .promo-image {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 26px;
+    padding: 16px;
+  }
+
+  .promo-image img {
+    width: 100%;
+    height: 310px;
+    object-fit: cover;
+    border-radius: 20px;
+    display: block;
+  }
+
+  .advantages-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .advantage-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+    padding: 24px;
+  }
+
+  .advantage-card h3 {
+    font-size: 21px;
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+
+  .advantage-card p {
+    color: #666;
+    font-size: 15px;
+  }
+
+  .brands-row {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+    padding: 26px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .brand-pill {
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-weight: 900;
+    color: #333;
+  }
+
+  @media (max-width: 1120px) {
+    .hero-layout,
+    .promo-card {
+      grid-template-columns: 1fr;
+    }
+
+    .categories-grid,
+    .products-grid,
+    .advantages-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .hero-card img,
+    .promo-image img {
+      height: 300px;
+    }
+
+    .promo-card {
+      padding: 30px 20px;
+    }
+
+    .hero-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .categories-grid,
+    .products-grid,
+    .advantages-grid,
+    .product-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-buttons {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn-main,
+    .btn-secondary,
+    .dark-button,
+    .outline-button {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="hero-home">
+  <div class="hero-layout">
+    <div>
+      <div class="hero-label">● Новые поступления уже в каталоге</div>
+
+      <h1 class="hero-home-title">
+        Техника для работы, игр и дома
+      </h1>
+
+      <p class="hero-home-subtitle">
+        Подберите клавиатуру, мышь, наушники, монитор или аксессуары под свой стиль.
+        Быстрое оформление заказа, удобная корзина и актуальные остатки товаров.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="/catalog" class="btn-main">Перейти в каталог</a>
+        <a href="/cart" class="btn-secondary">Открыть корзину</a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <img
+        src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1400&q=80"
+        alt="Современная электроника"
+      />
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <strong>5+</strong>
+          <span>категорий</span>
+        </div>
+
+        <div class="hero-stat">
+          <strong>24/7</strong>
+          <span>онлайн-каталог</span>
+        </div>
+
+        <div class="hero-stat">
+          <strong>100%</strong>
+          <span>актуальные цены</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="home-page">
+  <div class="container">
+    <section class="categories-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Популярные категории</h2>
+          <p class="section-subtitle">
+            Выбирайте товары по разделам и быстро находите нужную технику.
+          </p>
+        </div>
+
+        <a href="/catalog" class="outline-button">Весь каталог</a>
+      </div>
+
+      <div class="categories-grid">
+        <a href="/catalog?category=Клавиатуры" class="category-card">
+          <div>
+            <div class="category-icon">⌨</div>
+            <h3>Клавиатуры</h3>
+            <p>Механические, мембранные и игровые модели.</p>
+          </div>
+        </a>
+
+        <a href="/catalog?category=Мыши" class="category-card">
+          <div>
+            <div class="category-icon">🖱</div>
+            <h3>Мыши</h3>
+            <p>Беспроводные, проводные и игровые решения.</p>
+          </div>
+        </a>
+
+        <a href="/catalog?category=Наушники" class="category-card">
+          <div>
+            <div class="category-icon">🎧</div>
+            <h3>Наушники</h3>
+            <p>Для музыки, игр, работы и общения.</p>
+          </div>
+        </a>
+
+        <a href="/catalog?category=Мониторы" class="category-card">
+          <div>
+            <div class="category-icon">🖥</div>
+            <h3>Мониторы</h3>
+            <p>Экраны для дома, офиса и гейминга.</p>
+          </div>
+        </a>
+
+        <a href="/catalog?category=Аксессуары" class="category-card">
+          <div>
+            <div class="category-icon">⚡</div>
+            <h3>Аксессуары</h3>
+            <p>Полезные дополнения для рабочего места.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="products-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Рекомендуем сегодня</h2>
+          <p class="section-subtitle">
+            Товары, которые чаще всего выбирают для рабочего места и домашнего сетапа.
+          </p>
+        </div>
+
+        <a href="/catalog" class="dark-button">Смотреть все</a>
+      </div>
+
+      {% if products %}
+        <div class="products-grid">
+          {% for product in products %}
+            <article class="product-card">
+              <img src="{{ product.image }}" alt="{{ product.name }}">
+
+              <div class="product-content">
+                <div class="product-category">{{ product.category }}</div>
+                <h3 class="product-title">{{ product.name }}</h3>
+                <p class="product-desc">{{ product.description }}</p>
+
+                <div class="product-meta">
+                  <div class="product-price">{{ product.price }} ₽</div>
+
+                  {% if product.stock == 0 %}
+                    <span class="stock-badge stock-out">Нет в наличии</span>
+                  {% elif product.stock <= 5 %}
+                    <span class="stock-badge stock-low">Мало</span>
+                  {% else %}
+                    <span class="stock-badge stock-ok">В наличии</span>
+                  {% endif %}
+                </div>
+
+                <div class="product-actions">
+                  <a href="/product/{{ product.id }}" class="card-btn-secondary">Подробнее</a>
+
+                  {% if product.stock > 0 %}
+                    <a href="/add-to-cart/{{ product.id }}" class="card-btn">В корзину</a>
+                  {% else %}
+                    <span class="card-btn disabled">Нет товара</span>
+                  {% endif %}
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <article class="advantage-card">
+          <h3>Товары скоро появятся</h3>
+          <p>Каталог обновляется. Загляните позже или перейдите в раздел товаров.</p>
+        </article>
+      {% endif %}
+    </section>
+
+    <section class="promo-section">
+      <div class="promo-card">
+        <div>
+          <h2>Соберите удобное рабочее место</h2>
+          <p>
+            Подберите клавиатуру, мышь, наушники и монитор в одном заказе.
+            Мы сделали каталог простым, чтобы вы быстрее нашли подходящую технику.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="/catalog" class="btn-main">Подобрать товары</a>
+            <a href="/profile" class="btn-secondary">Личный кабинет</a>
+          </div>
+        </div>
+
+        <div class="promo-image">
+          <img
+            src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1200&q=80"
+            alt="Рабочее место с электроникой"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="advantages-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Почему выбирают нас</h2>
+          <p class="section-subtitle">
+            Всё необходимое для удобной онлайн-покупки электроники.
+          </p>
+        </div>
+      </div>
+
+      <div class="advantages-grid">
+        <article class="advantage-card">
+          <h3>Актуальные остатки</h3>
+          <p>На карточках товаров отображается наличие, чтобы вы сразу видели доступность.</p>
+        </article>
+
+        <article class="advantage-card">
+          <h3>Удобная корзина</h3>
+          <p>Добавляйте товары, меняйте количество и контролируйте итоговую сумму заказа.</p>
+        </article>
+
+        <article class="advantage-card">
+          <h3>Личный кабинет</h3>
+          <p>После оформления покупки заказ сохраняется в профиле пользователя.</p>
+        </article>
+
+        <article class="advantage-card">
+          <h3>Быстрое управление</h3>
+          <p>Администратор обновляет каталог, категории и статусы заказов в панели управления.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="brands-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Бренды в каталоге</h2>
+          <p class="section-subtitle">
+            В магазине представлены популярные производители электроники и аксессуаров.
+          </p>
+        </div>
+      </div>
+
+      <div class="brands-row">
+        <span class="brand-pill">Logitech</span>
+        <span class="brand-pill">Sony</span>
+        <span class="brand-pill">ASUS</span>
+        <span class="brand-pill">Apple</span>
+        <span class="brand-pill">Redragon</span>
+        <span class="brand-pill">Samsung</span>
+      </div>
+    </section>
+  </div>
+</section>
+{% endblock %}

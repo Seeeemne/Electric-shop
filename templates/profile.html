@@ -1,0 +1,512 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .profile-page {
+    padding: 42px 0 80px;
+  }
+
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .profile-sidebar,
+  .profile-main-card,
+  .orders-card,
+  .favorites-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+  }
+
+  .profile-sidebar {
+    padding: 28px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #74839d, #aee8ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 18px;
+  }
+
+  .user-name {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .user-email {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 18px;
+    word-break: break-word;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #edf8ef;
+    color: #207a35;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  .status-badge.admin {
+    background: #eef5ff;
+    color: #315b8b;
+  }
+
+  .sidebar-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .sidebar-menu a {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    font-weight: 700;
+    color: #222;
+    transition: 0.2s ease;
+  }
+
+  .sidebar-menu a.active {
+    background: #111;
+    color: white;
+    border-color: #111;
+  }
+
+  .logout-btn,
+  .order-link,
+  .catalog-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    font-weight: 800;
+    transition: 0.2s ease;
+  }
+
+  .logout-btn {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    background: #eef2f5;
+    color: #111;
+  }
+
+  .order-link {
+    margin-top: 14px;
+    padding: 11px 16px;
+    background: #111;
+    color: white;
+    font-size: 14px;
+  }
+
+  .catalog-btn {
+    margin-top: 16px;
+    padding: 13px 18px;
+    background: #111;
+    color: white;
+    font-size: 15px;
+  }
+
+  .logout-btn:hover,
+  .sidebar-menu a:hover,
+  .order-link:hover,
+  .catalog-btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+  }
+
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .profile-main-card,
+  .orders-card,
+  .favorites-card {
+    padding: 28px;
+  }
+
+  .section-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 18px;
+  }
+
+  .profile-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .info-card {
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .info-label {
+    color: #6c6c6c;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .info-value {
+    font-size: 18px;
+    font-weight: 700;
+    word-break: break-word;
+  }
+
+  .orders-header,
+  .favorites-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .small-note {
+    color: #666;
+    font-size: 15px;
+  }
+
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .order-item {
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 18px;
+    background: #fff;
+  }
+
+  .order-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .order-number {
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .order-date {
+    color: #666;
+    font-size: 15px;
+  }
+
+  .order-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .status-done {
+    background: #edf8ef;
+    color: #207a35;
+  }
+
+  .status-process {
+    background: #fff5e7;
+    color: #b56d00;
+  }
+
+  .status-new {
+    background: #eef5ff;
+    color: #315b8b;
+  }
+
+  .order-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    color: #555;
+    font-size: 15px;
+  }
+
+  .favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .favorite-card {
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  }
+
+  .favorite-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background: #e7eef5;
+  }
+
+  .favorite-content {
+    padding: 16px;
+  }
+
+  .favorite-category {
+    color: #6b7f95;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .favorite-title {
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .favorite-price {
+    font-size: 18px;
+    font-weight: 900;
+  }
+
+  @media (max-width: 1120px) {
+    .favorites-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 920px) {
+    .profile-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .profile-info-grid,
+    .favorites-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar,
+    .profile-main-card,
+    .orders-card,
+    .favorites-card {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Личный кабинет</h1>
+  <p class="page-subtitle">
+    Здесь пользователь может просматривать свои данные, историю заказов и быстрые ссылки магазина.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="profile-page">
+  <div class="container">
+    <section class="profile-layout">
+      <aside class="profile-sidebar">
+        <div class="avatar">{{ user.name[0]|upper if user and user.name else "U" }}</div>
+        <h2 class="user-name">{{ user.name }}</h2>
+        <p class="user-email">{{ user.email }}</p>
+
+        <div class="status-badge {% if user.is_admin %}admin{% endif %}">
+          ● {% if user.is_admin %}Администратор{% else %}Аккаунт активен{% endif %}
+        </div>
+
+        <ul class="sidebar-menu">
+          <li><a href="#profile-info" class="active">Профиль</a></li>
+          <li><a href="#orders">Мои заказы</a></li>
+          <li><a href="#popular">Популярные товары</a></li>
+          <li><a href="/catalog">Перейти в каталог</a></li>
+
+          {% if user.is_admin %}
+            <li><a href="/admin/products">Панель администратора</a></li>
+            <li><a href="/admin/orders">Заказы магазина</a></li>
+            <li><a href="/admin/users">Пользователи</a></li>
+          {% endif %}
+        </ul>
+
+        <a href="/logout" class="logout-btn">Выйти из аккаунта</a>
+      </aside>
+
+      <div class="profile-content">
+        <section class="profile-main-card" id="profile-info">
+          <h2 class="section-title">Информация о пользователе</h2>
+
+          <div class="profile-info-grid">
+            <div class="info-card">
+              <div class="info-label">Имя пользователя</div>
+              <div class="info-value">{{ user.name }}</div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-label">Электронная почта</div>
+              <div class="info-value">{{ user.email }}</div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-label">ID пользователя</div>
+              <div class="info-value">{{ user.id }}</div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-label">Статус</div>
+              <div class="info-value">
+                {% if user.is_admin %}
+                  Администратор
+                {% else %}
+                  Покупатель
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="orders-card" id="orders">
+          <div class="orders-header">
+            <h2 class="section-title">Мои заказы</h2>
+            <span class="small-note">История покупок</span>
+          </div>
+
+          <div class="orders-list">
+            {% if orders %}
+              {% for order in orders %}
+                <article class="order-item">
+                  <div class="order-top">
+                    <div>
+                      <div class="order-number">Заказ #{{ order.id }}</div>
+                      <div class="order-date">{{ order.created_at }}</div>
+                    </div>
+
+                    {% if order.status == "done" %}
+                      <div class="order-status status-done">● Выполнен</div>
+                    {% elif order.status == "processing" %}
+                      <div class="order-status status-process">● В обработке</div>
+                    {% else %}
+                      <div class="order-status status-new">● Новый</div>
+                    {% endif %}
+                  </div>
+
+                  <div class="order-meta">
+                    <span>Товаров: {{ order.items_count }}</span>
+                    <span>Сумма: {{ order.total_amount }} ₽</span>
+                    <span>Email: {{ order.customer_email }}</span>
+                  </div>
+
+                  <a href="/order/{{ order.id }}" class="order-link">Открыть заказ</a>
+                </article>
+              {% endfor %}
+            {% else %}
+              <article class="order-item">
+                <div class="order-number">У вас пока нет заказов</div>
+                <div class="order-date" style="margin-top: 8px;">
+                  Перейдите в каталог, добавьте товары в корзину и оформите первую покупку.
+                </div>
+                <a href="/catalog" class="catalog-btn">Перейти в каталог</a>
+              </article>
+            {% endif %}
+          </div>
+        </section>
+
+        <section class="favorites-card" id="popular">
+          <div class="favorites-header">
+            <h2 class="section-title">Популярные товары</h2>
+            <span class="small-note">Подборка магазина</span>
+          </div>
+
+          <div class="favorites-grid">
+            <article class="favorite-card">
+              <a href="/product/5">
+                <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80" alt="Ноутбук">
+              </a>
+
+              <div class="favorite-content">
+                <div class="favorite-category">Ноутбуки</div>
+                <h3 class="favorite-title"><a href="/product/5">ASUS VivoBook 15</a></h3>
+                <div class="favorite-price">54 990 ₽</div>
+              </div>
+            </article>
+
+            <article class="favorite-card">
+              <a href="/product/4">
+                <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=900&q=80" alt="Монитор">
+              </a>
+
+              <div class="favorite-content">
+                <div class="favorite-category">Мониторы</div>
+                <h3 class="favorite-title"><a href="/product/4">Studio Display XDR</a></h3>
+                <div class="favorite-price">29 990 ₽</div>
+              </div>
+            </article>
+
+            <article class="favorite-card">
+              <a href="/product/3">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80" alt="Наушники">
+              </a>
+
+              <div class="favorite-content">
+                <div class="favorite-category">Наушники</div>
+                <h3 class="favorite-title"><a href="/product/3">Sony WH-CH720N</a></h3>
+                <div class="favorite-price">24 990 ₽</div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+</section>
+{% endblock %}

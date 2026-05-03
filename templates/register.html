@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  .register-section {
+    padding: 42px 0 80px;
+  }
+
+  .register-layout {
+    display: grid;
+    grid-template-columns: 1fr 470px;
+    gap: 28px;
+    align-items: stretch;
+  }
+
+  .register-info,
+  .register-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+  }
+
+  .register-info {
+    padding: 34px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
+  }
+
+  .register-info h2 {
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+
+  .register-info p {
+    font-size: 17px;
+    color: #5f5f5f;
+    margin-bottom: 22px;
+    max-width: 620px;
+  }
+
+  .advantages {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .adv-card {
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .adv-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .adv-card p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+  }
+
+  .register-card {
+    padding: 32px;
+  }
+
+  .register-card h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .card-subtitle {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .double-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    border: 1px solid #dddddd;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px;
+    outline: none;
+  }
+
+  .form-input:focus {
+    border-color: #8aa5bf;
+    background: white;
+  }
+
+  .checkbox-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #555;
+    font-size: 14px;
+    margin: 8px 0 22px;
+  }
+
+  .checkbox-wrap input {
+    margin-top: 3px;
+  }
+
+  .auth-btn,
+  .secondary-btn {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  .auth-btn {
+    background: #111;
+    color: white;
+  }
+
+  .secondary-btn {
+    margin-top: 12px;
+    background: #eef2f5;
+    color: #111;
+  }
+
+  .auth-btn:hover,
+  .secondary-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .login-text {
+    text-align: center;
+    color: #555;
+    font-size: 15px;
+    margin-top: 22px;
+  }
+
+  .login-text a {
+    color: #315b8b;
+    font-weight: 800;
+  }
+
+  .error-box {
+    background: #fff1f1;
+    color: #b23a3a;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 1120px) {
+    .register-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .advantages {
+      grid-template-columns: 1fr;
+    }
+
+    .double-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .register-card,
+    .register-info {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Создание аккаунта</h1>
+  <p class="page-subtitle">
+    Зарегистрируйтесь, чтобы сохранять товары в корзину, оформлять заказы и пользоваться личным кабинетом магазина.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="register-section">
+  <div class="container">
+    <section class="register-layout">
+      <div class="register-info">
+        <h2>Зарегистрируйтесь в «Кулон»</h2>
+        <p>
+          Аккаунт пользователя делает работу с магазином удобнее: можно сохранять выбранные товары,
+          оформлять покупки и просматривать историю заказов.
+        </p>
+
+        <div class="advantages">
+          <article class="adv-card">
+            <h3>Личный кабинет</h3>
+            <p>После регистрации пользователь получает доступ к профилю и истории своих заказов.</p>
+          </article>
+
+          <article class="adv-card">
+            <h3>Быстрое оформление</h3>
+            <p>Товары можно сохранять в корзину и переходить к покупке без повторного ввода данных.</p>
+          </article>
+
+          <article class="adv-card">
+            <h3>Удобная навигация</h3>
+            <p>Зарегистрированный пользователь может проще работать с каталогом и возвращаться к нужным товарам.</p>
+          </article>
+
+          <article class="adv-card">
+            <h3>Учебный проект</h3>
+            <p>Эта страница показывает регистрацию пользователя для проекта интернет-магазина электроники.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="register-card">
+        <h2>Регистрация</h2>
+        <p class="card-subtitle">Заполните форму, чтобы создать новую учетную запись.</p>
+
+        <form method="post">
+          {% if error %}
+            <div class="error-box">{{ error }}</div>
+          {% endif %}
+
+          <div class="form-group">
+            <label class="form-label" for="username">Имя пользователя</label>
+            <input
+              class="form-input"
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Введите имя пользователя"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Электронная почта</label>
+            <input
+              class="form-input"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Введите email"
+              required
+            />
+          </div>
+
+          <div class="double-row">
+            <div class="form-group">
+              <label class="form-label" for="password">Пароль</label>
+              <input
+                class="form-input"
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Введите пароль"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="password_repeat">Повтор пароля</label>
+              <input
+                class="form-input"
+                type="password"
+                id="password_repeat"
+                name="password_repeat"
+                placeholder="Повторите пароль"
+                required
+              />
+            </div>
+          </div>
+
+          <label class="checkbox-wrap">
+            <input type="checkbox" name="agree" required />
+            <span>Я согласен с условиями использования сайта и обработкой персональных данных.</span>
+          </label>
+
+          <button type="submit" class="auth-btn">Зарегистрироваться</button>
+          <a href="/catalog" class="secondary-btn">Вернуться в каталог</a>
+        </form>
+
+        <p class="login-text">
+          Уже есть аккаунт? <a href="/login">Войти</a>
+        </p>
+      </div>
+    </section>
+  </div>
+</section>
+{% endblock %}

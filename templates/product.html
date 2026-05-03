@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  .product-page {
+    padding: 36px 0 80px;
+  }
+
+  .breadcrumbs {
+    padding: 0 0 20px;
+    color: #6b6b6b;
+    font-size: 15px;
+  }
+
+  .breadcrumbs a {
+    color: #315b8b;
+    font-weight: 700;
+  }
+
+  .breadcrumbs span {
+    color: #111;
+    font-weight: 700;
+  }
+
+  .product-section {
+    padding-bottom: 34px;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+
+  .product-gallery {
+    padding: 28px;
+    background: #f8fafc;
+    border-right: 1px solid #ececec;
+  }
+
+  .main-image {
+    width: 100%;
+    height: 460px;
+    object-fit: cover;
+    border-radius: 20px;
+    display: block;
+    background: #dde7ef;
+  }
+
+  .product-info {
+    padding: 34px 32px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-category {
+    color: #6b7f95;
+    font-weight: 800;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+
+  .product-title {
+    font-size: clamp(30px, 4vw, 42px);
+    line-height: 1.1;
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+
+  .product-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .product-meta span {
+    background: #f1f5f8;
+    border-radius: 999px;
+    padding: 8px 12px;
+  }
+
+  .product-desc {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .price {
+    font-size: 34px;
+    font-weight: 900;
+  }
+
+  .old-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .stock {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 24px;
+  }
+
+  .stock-ok {
+    background: #edf8ef;
+    color: #207a35;
+  }
+
+  .stock-low {
+    background: #fff8e6;
+    color: #9a6a00;
+  }
+
+  .stock-out {
+    background: #fff1f1;
+    color: #b23a3a;
+  }
+
+  .buy-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+
+  .buy-btn,
+  .secondary-btn,
+  .disabled-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 900;
+    transition: 0.2s ease;
+  }
+
+  .buy-btn {
+    background: #111;
+    color: white;
+  }
+
+  .secondary-btn {
+    background: #eef2f5;
+    color: #111;
+  }
+
+  .disabled-btn {
+    background: #d8dde3;
+    color: #777;
+    pointer-events: none;
+  }
+
+  .buy-btn:hover,
+  .secondary-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: auto;
+  }
+
+  .feature-card {
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .feature-label {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .feature-value {
+    font-weight: 900;
+    font-size: 16px;
+  }
+
+  .details-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-top: 28px;
+  }
+
+  .details-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+    padding: 28px;
+  }
+
+  .details-card h2 {
+    font-size: 28px;
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+
+  .details-card p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .spec-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .spec-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 12px;
+  }
+
+  .spec-name {
+    color: #666;
+  }
+
+  .spec-value {
+    font-weight: 800;
+    text-align: right;
+  }
+
+  @media (max-width: 1120px) {
+    .product-card,
+    .details-section {
+      grid-template-columns: 1fr;
+    }
+
+    .product-gallery {
+      border-right: none;
+      border-bottom: 1px solid #ececec;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .features {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .main-image {
+      height: 300px;
+    }
+
+    .product-info,
+    .product-gallery,
+    .details-card {
+      padding: 20px;
+    }
+
+    .buy-box {
+      grid-template-columns: 1fr;
+    }
+
+    .spec-list li {
+      flex-direction: column;
+    }
+
+    .spec-value {
+      text-align: left;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">{{ product.name }}</h1>
+  <p class="page-subtitle">
+    Подробная информация о товаре, его характеристиках и стоимости.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="product-page">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="/">Главная</a> / <a href="/catalog">Каталог</a> / <span>{{ product.name }}</span>
+    </div>
+
+    <section class="product-section">
+      <div class="product-card">
+        <div class="product-gallery">
+          <img class="main-image" src="{{ product.image }}" alt="{{ product.name }}" />
+        </div>
+
+        <div class="product-info">
+          <div class="product-category">{{ product.category }}</div>
+          <h1 class="product-title">{{ product.name }}</h1>
+
+          <div class="product-meta">
+            <span>Бренд: {{ product.brand }}</span>
+            <span>Артикул: {{ product.article }}</span>
+            <span>ID: {{ product.id }}</span>
+          </div>
+
+          <p class="product-desc">{{ product.description }}</p>
+
+          <div class="price-row">
+            <div class="price">{{ product.price }} ₽</div>
+
+            {% if product.old_price and product.old_price > product.price %}
+              <div class="old-price">{{ product.old_price }} ₽</div>
+            {% endif %}
+          </div>
+
+          {% if product.stock == 0 %}
+            <div class="stock stock-out">● Нет в наличии</div>
+          {% elif product.stock <= 5 %}
+            <div class="stock stock-low">● Мало осталось: {{ product.stock }} шт.</div>
+          {% else %}
+            <div class="stock stock-ok">● В наличии: {{ product.stock }} шт.</div>
+          {% endif %}
+
+          <div class="buy-box">
+            {% if product.stock > 0 %}
+              <a href="/add-to-cart/{{ product.id }}" class="buy-btn">Добавить в корзину</a>
+              <a href="/add-to-cart/{{ product.id }}" class="secondary-btn">Купить сейчас</a>
+            {% else %}
+              <span class="disabled-btn">Нет в наличии</span>
+              <a href="/catalog" class="secondary-btn">Вернуться в каталог</a>
+            {% endif %}
+          </div>
+
+          <div class="features">
+            <div class="feature-card">
+              <div class="feature-label">Категория</div>
+              <div class="feature-value">{{ product.category }}</div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-label">Бренд</div>
+              <div class="feature-value">{{ product.brand }}</div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-label">Артикул</div>
+              <div class="feature-value">{{ product.article }}</div>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-label">Остаток</div>
+              <div class="feature-value">{{ product.stock }} шт.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <div class="details-card">
+          <h2>Описание товара</h2>
+          <p>{{ product.full_description }}</p>
+          <p>
+            Эта страница заполняется из базы данных, поэтому для каждого товара показывается своя информация.
+          </p>
+        </div>
+
+        <div class="details-card">
+          <h2>Характеристики</h2>
+
+          <ul class="spec-list">
+            <li>
+              <span class="spec-name">Название</span>
+              <span class="spec-value">{{ product.name }}</span>
+            </li>
+
+            <li>
+              <span class="spec-name">Категория</span>
+              <span class="spec-value">{{ product.category }}</span>
+            </li>
+
+            <li>
+              <span class="spec-name">Бренд</span>
+              <span class="spec-value">{{ product.brand }}</span>
+            </li>
+
+            <li>
+              <span class="spec-name">Артикул</span>
+              <span class="spec-value">{{ product.article }}</span>
+            </li>
+
+            <li>
+              <span class="spec-name">Цена</span>
+              <span class="spec-value">{{ product.price }} ₽</span>
+            </li>
+
+            <li>
+              <span class="spec-name">Старая цена</span>
+              <span class="spec-value">
+                {% if product.old_price %}
+                  {{ product.old_price }} ₽
+                {% else %}
+                  —
+                {% endif %}
+              </span>
+            </li>
+
+            <li>
+              <span class="spec-name">Остаток</span>
+              <span class="spec-value">{{ product.stock }} шт.</span>
+            </li>
+
+            <li>
+              <span class="spec-name">ID товара</span>
+              <span class="spec-value">{{ product.id }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+{% endblock %}

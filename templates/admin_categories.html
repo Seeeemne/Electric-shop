@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+
+{% block title %}Управление категориями — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  .admin-page {
+    padding: 42px 0 80px;
+  }
+
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .admin-sidebar,
+  .admin-main {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+  }
+
+  .admin-sidebar {
+    padding: 24px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eef5ff;
+    color: #315b8b;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .admin-sidebar h2 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .admin-sidebar p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .sidebar-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sidebar-menu a {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    font-weight: 700;
+    color: #222;
+    transition: 0.2s ease;
+  }
+
+  .sidebar-menu a.active {
+    background: #111;
+    color: white;
+    border-color: #111;
+  }
+
+  .sidebar-menu a:hover {
+    transform: translateY(-1px);
+  }
+
+  .admin-main {
+    padding: 24px;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar h2 {
+    font-size: 30px;
+    font-weight: 800;
+  }
+
+  .toolbar-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .small-btn,
+  .danger-btn,
+  .disabled-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-weight: 800;
+    transition: 0.2s ease;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .primary-btn {
+    background: #111;
+    color: white;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .secondary-btn {
+    background: #eef2f5;
+    color: #111;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .small-btn {
+    background: #111;
+    color: white;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .danger-btn {
+    background: #fff1f1;
+    color: #b23a3a;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .disabled-btn {
+    background: #eeeeee;
+    color: #999999;
+    padding: 10px 14px;
+    font-size: 13px;
+    cursor: not-allowed;
+  }
+
+  .primary-btn:hover,
+  .secondary-btn:hover,
+  .small-btn:hover,
+  .danger-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+  }
+
+  th,
+  td {
+    padding: 16px 14px;
+    border-bottom: 1px solid #ececec;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    color: #666;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    font-size: 15px;
+  }
+
+  .category-name {
+    font-size: 18px;
+    font-weight: 900;
+  }
+
+  .category-desc {
+    color: #666;
+    max-width: 380px;
+  }
+
+  .count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: #eef5ff;
+    color: #315b8b;
+    font-weight: 900;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .inline-form {
+    display: inline;
+  }
+
+  .empty-box {
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 20px;
+    padding: 36px 20px;
+    color: #666;
+    font-weight: 700;
+  }
+
+  .bottom-note {
+    color: #666;
+    font-size: 14px;
+    margin-top: 18px;
+  }
+
+  @media (max-width: 920px) {
+    .admin-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .admin-sidebar,
+    .admin-main {
+      padding: 20px;
+    }
+
+    .toolbar-buttons {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Управление категориями</h1>
+  <p class="page-subtitle">
+    Добавляйте, редактируйте и удаляйте категории товаров.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+  <div class="container">
+    <section class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-badge">● Панель администратора</div>
+
+        <h2>Управление магазином</h2>
+        <p>Раздел для работы с категориями каталога.</p>
+
+        <ul class="sidebar-menu">
+          <li><a href="/admin/products">Товары</a></li>
+          <li><a href="/admin/products/add">Добавить товар</a></li>
+          <li><a href="/admin/categories" class="active">Категории</a></li>
+          <li><a href="/admin/categories/add">Добавить категорию</a></li>
+          <li><a href="/admin/orders">Заказы</a></li>
+          <li><a href="/admin/users">Пользователи</a></li>
+          <li><a href="/profile">Профиль</a></li>
+        </ul>
+      </aside>
+
+      <section class="admin-main">
+        <div class="toolbar">
+          <h2>Список категорий</h2>
+
+          <div class="toolbar-buttons">
+            <a href="/admin/categories" class="secondary-btn">Обновить</a>
+            <a href="/admin/categories/add" class="primary-btn">Добавить категорию</a>
+          </div>
+        </div>
+
+        {% if categories %}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Название</th>
+                  <th>Описание</th>
+                  <th>Товаров</th>
+                  <th>Дата создания</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for category in categories %}
+                  <tr>
+                    <td>
+                      <div class="category-name">{{ category.name }}</div>
+                    </td>
+
+                    <td>
+                      <div class="category-desc">
+                        {{ category.description if category.description else "—" }}
+                      </div>
+                    </td>
+
+                    <td>
+                      <span class="count-badge">{{ category.product_count }}</span>
+                    </td>
+
+                    <td>{{ category.created_at.strftime('%d.%m.%Y') }}</td>
+
+                    <td>
+                      <div class="actions">
+                        <a href="/admin/categories/edit/{{ category.id }}" class="small-btn">Редактировать</a>
+
+                        {% if category.product_count == 0 %}
+                          <form
+                            method="post"
+                            action="/admin/categories/delete/{{ category.id }}"
+                            class="inline-form"
+                            onsubmit="return confirm('Удалить категорию {{ category.name }}?');"
+                          >
+                            <button type="submit" class="danger-btn">Удалить</button>
+                          </form>
+                        {% else %}
+                          <span class="disabled-btn" title="Нельзя удалять категории с товарами">
+                            Удалить нельзя
+                          </span>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="empty-box">
+            Категории не найдены. Создайте первую категорию.
+          </div>
+        {% endif %}
+
+        <p class="bottom-note">Всего категорий: {{ categories|length }}</p>
+      </section>
+    </section>
+  </div>
+</section>
+{% endblock %}

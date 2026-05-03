@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование товара — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-page {
+    padding: 42px 0 80px;
+  }
+
+  .form-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+    padding: 28px;
+  }
+
+  .section-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .card-subtitle {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 22px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group.full {
+    grid-column: 1 / -1;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #d9d9d9;
+    border-radius: 14px;
+    background: #fafafa;
+    font-size: 15px;
+    outline: none;
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    border-color: #8aa5bf;
+    background: white;
+  }
+
+  .form-textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  .hint {
+    color: #777;
+    font-size: 13px;
+    margin-top: 6px;
+  }
+
+  .message {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .error {
+    background: #fff1f1;
+    color: #b23a3a;
+    border: 1px solid #ffdddd;
+  }
+
+  .success {
+    background: #edf8ef;
+    color: #207a35;
+    border: 1px solid #d5f0d8;
+  }
+
+  .preview-box {
+    margin-top: 10px;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 16px;
+    background: #fafafa;
+  }
+
+  .preview-box img {
+    width: 240px;
+    max-width: 100%;
+    border-radius: 16px;
+    display: block;
+    background: #e5edf4;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 800;
+    transition: 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .primary-btn {
+    background: #111;
+    color: white;
+  }
+
+  .secondary-btn {
+    background: #eef2f5;
+    color: #111;
+  }
+
+  .primary-btn:hover,
+  .secondary-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 760px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+      grid-column: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .form-card {
+      padding: 20px;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Редактирование товара</h1>
+  <p class="page-subtitle">
+    Измените данные товара и сохраните их в базе данных.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="form-page">
+  <div class="container">
+    <section class="form-card">
+      <h2 class="section-title">{{ product.name }}</h2>
+      <p class="card-subtitle">
+        ID товара: {{ product.id }} · Артикул: {{ product.article }}
+      </p>
+
+      {% if error %}
+        <div class="message error">{{ error }}</div>
+      {% endif %}
+
+      {% if success %}
+        <div class="message success">{{ success }}</div>
+      {% endif %}
+
+      <form method="post" action="/admin/products/edit/{{ product.id }}" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="name">Название товара *</label>
+            <input
+              class="form-input"
+              type="text"
+              id="name"
+              name="name"
+              value="{{ product.name }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="category">Категория *</label>
+            <select class="form-select" id="category" name="category" required>
+              <option value="{{ product.category }}">{{ product.category }}</option>
+              {% if categories %}
+                {% for category in categories %}
+                  <option value="{{ category.name }}" {% if category.name == product.category %}selected{% endif %}>
+                    {{ category.name }}
+                  </option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="brand">Бренд *</label>
+            <input
+              class="form-input"
+              type="text"
+              id="brand"
+              name="brand"
+              value="{{ product.brand }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="article">Артикул *</label>
+            <input
+              class="form-input"
+              type="text"
+              id="article"
+              name="article"
+              value="{{ product.article }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="price">Цена *</label>
+            <input
+              class="form-input"
+              type="number"
+              id="price"
+              name="price"
+              value="{{ product.price }}"
+              min="1"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="old_price">Старая цена</label>
+            <input
+              class="form-input"
+              type="number"
+              id="old_price"
+              name="old_price"
+              value="{{ product.old_price if product.old_price else 0 }}"
+              min="0"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="stock">Количество на складе *</label>
+            <input
+              class="form-input"
+              type="number"
+              id="stock"
+              name="stock"
+              value="{{ product.stock }}"
+              min="0"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="image">Ссылка на изображение</label>
+            <input
+              class="form-input"
+              type="text"
+              id="image"
+              name="image"
+              value="{{ product.image }}"
+            />
+            <div class="hint">Если загрузить новый файл ниже, он заменит ссылку.</div>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label" for="image_file">Загрузить новое изображение</label>
+            <input
+              class="form-input"
+              type="file"
+              id="image_file"
+              name="image_file"
+              accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+            />
+            <div class="hint">Разрешены: png, jpg, jpeg, webp, gif.</div>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label" for="description">Краткое описание *</label>
+            <textarea
+              class="form-textarea"
+              id="description"
+              name="description"
+              required
+            >{{ product.description }}</textarea>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label" for="full_description">Полное описание *</label>
+            <textarea
+              class="form-textarea"
+              id="full_description"
+              name="full_description"
+              required
+            >{{ product.full_description }}</textarea>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">Текущее изображение</label>
+            <div class="preview-box">
+              <img src="{{ product.image }}" alt="{{ product.name }}">
+            </div>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button type="submit" class="primary-btn">Сохранить изменения</button>
+          <a href="/admin/products" class="secondary-btn">Вернуться к списку</a>
+          <a href="/product/{{ product.id }}" class="secondary-btn">Открыть товар</a>
+        </div>
+      </form>
+    </section>
+  </div>
+</section>
+{% endblock %}

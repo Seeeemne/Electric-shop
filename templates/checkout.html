@@ -1,0 +1,445 @@
+{% extends "base.html" %}
+
+{% block title %}Оформление заказа — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  .checkout-page {
+    padding: 42px 0 80px;
+  }
+
+  .checkout-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .form-card,
+  .summary-card,
+  .empty-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+    padding: 26px;
+  }
+
+  .section-title,
+  .summary-title,
+  .empty-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 18px;
+  }
+
+  .section-subtitle {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 22px;
+  }
+
+  .error-box {
+    background: #fff1f1;
+    color: #b23a3a;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group.full {
+    grid-column: 1 / -1;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    border: 1px solid #dddddd;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px;
+    outline: none;
+  }
+
+  .form-textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    border-color: #8aa5bf;
+    background: white;
+  }
+
+  .submit-btn,
+  .secondary-btn,
+  .catalog-btn {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 800;
+    transition: 0.2s ease;
+    cursor: pointer;
+  }
+
+  .submit-btn {
+    background: #111;
+    color: white;
+    margin-top: 6px;
+  }
+
+  .secondary-btn {
+    background: #eef2f5;
+    color: #111;
+    margin-top: 12px;
+  }
+
+  .catalog-btn {
+    max-width: 280px;
+    background: #111;
+    color: white;
+    margin-top: 20px;
+  }
+
+  .submit-btn:hover,
+  .secondary-btn:hover,
+  .catalog-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .summary-card {
+    position: sticky;
+    top: 20px;
+  }
+
+  .order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .order-item {
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .order-item-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .order-item-category {
+    color: #6b7f95;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .order-item-name {
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .order-item-subtotal {
+    font-size: 18px;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .order-item-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    color: #555;
+    font-size: 16px;
+  }
+
+  .summary-row.total {
+    border-top: 1px solid #e5e5e5;
+    padding-top: 14px;
+    margin-top: 4px;
+    color: #111;
+    font-weight: 900;
+    font-size: 22px;
+  }
+
+  .summary-note {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .empty-card {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .empty-text {
+    color: #666;
+    font-size: 17px;
+  }
+
+  @media (max-width: 920px) {
+    .checkout-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .summary-card {
+      position: static;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .order-item-top {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .form-card,
+    .summary-card,
+    .empty-card {
+      padding: 20px;
+    }
+
+    .section-title,
+    .summary-title,
+    .empty-title {
+      font-size: 26px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Оформление заказа</h1>
+  <p class="page-subtitle">
+    Заполните данные покупателя и подтвердите заказ.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="checkout-page">
+  <div class="container">
+    {% if cart_items %}
+      <section class="checkout-layout">
+        <section class="form-card">
+          <h2 class="section-title">Данные покупателя</h2>
+          <p class="section-subtitle">
+            Укажите контактные данные, адрес доставки и способ оплаты.
+          </p>
+
+          {% if error %}
+            <div class="error-box">{{ error }}</div>
+          {% endif %}
+
+          <form method="post">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="name">Имя</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="surname">Фамилия</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="surname"
+                  name="surname"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input
+                  class="form-input"
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  {% if current_user %}value="{{ current_user.email }}"{% endif %}
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="phone">Телефон</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  placeholder="+7 777 000 00 00"
+                />
+              </div>
+
+              <div class="form-group full">
+                <label class="form-label" for="address">Адрес доставки</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="address"
+                  name="address"
+                  placeholder="Город, улица, дом, квартира"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="delivery">Способ доставки</label>
+                <select class="form-select" id="delivery" name="delivery">
+                  <option value="courier">Курьер</option>
+                  <option value="pickup">Самовывоз</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="payment">Способ оплаты</label>
+                <select class="form-select" id="payment" name="payment">
+                  <option value="online">Онлайн</option>
+                  <option value="cash">При получении</option>
+                </select>
+              </div>
+
+              <div class="form-group full">
+                <label class="form-label" for="comment">Комментарий к заказу</label>
+                <textarea
+                  class="form-textarea"
+                  id="comment"
+                  name="comment"
+                  placeholder="Например: удобное время доставки или дополнительная информация"
+                ></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Подтвердить заказ</button>
+            <a href="/cart" class="secondary-btn">Вернуться в корзину</a>
+          </form>
+        </section>
+
+        <aside class="summary-card">
+          <h2 class="summary-title">Ваш заказ</h2>
+
+          <div class="order-items">
+            {% for item in cart_items %}
+              {% set product = item.product %}
+
+              <article class="order-item">
+                <div class="order-item-top">
+                  <div>
+                    <div class="order-item-category">{{ product.category }}</div>
+                    <div class="order-item-name">{{ product.name }}</div>
+                  </div>
+
+                  <div class="order-item-subtotal">{{ item.subtotal }} ₽</div>
+                </div>
+
+                <div class="order-item-meta">
+                  <span>Цена: {{ product.price }} ₽</span>
+                  <span>Количество: {{ item.quantity }}</span>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+
+          <div class="summary-list">
+            <div class="summary-row">
+              <span>Товаров</span>
+              <span>{{ total_quantity }}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Позиций</span>
+              <span>{{ cart_items|length }}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Доставка</span>
+              <span>Бесплатно</span>
+            </div>
+
+            <div class="summary-row total">
+              <span>К оплате</span>
+              <span>{{ total }} ₽</span>
+            </div>
+          </div>
+
+          <p class="summary-note">
+            После подтверждения заказ появится в вашем профиле и в панели администратора.
+          </p>
+        </aside>
+      </section>
+    {% else %}
+      <section class="empty-card">
+        <h2 class="empty-title">Корзина пуста</h2>
+        <p class="empty-text">
+          Чтобы оформить заказ, сначала добавьте товары в корзину.
+        </p>
+
+        <a href="/catalog" class="catalog-btn">Перейти в каталог</a>
+      </section>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

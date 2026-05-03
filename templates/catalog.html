@@ -1,0 +1,449 @@
+{% extends "base.html" %}
+
+{% block title %}Каталог — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  .catalog-page {
+    padding: 42px 0 80px;
+  }
+
+  .catalog-layout {
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .sidebar,
+  .catalog-main-card {
+    background: white;
+    border-radius: 22px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+  }
+
+  .sidebar {
+    padding: 24px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .sidebar h3 {
+    font-size: 24px;
+    margin-bottom: 18px;
+  }
+
+  .filter-group {
+    margin-bottom: 26px;
+  }
+
+  .filter-group h4 {
+    font-size: 17px;
+    margin-bottom: 12px;
+  }
+
+  .sort-select,
+  .price-inputs input,
+  .search-box input {
+    width: 100%;
+    border: 1px solid #dddddd;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 13px 14px;
+    font-size: 15px;
+    outline: none;
+  }
+
+  .sort-select:focus,
+  .price-inputs input:focus,
+  .search-box input:focus {
+    border-color: #8aa5bf;
+    background: white;
+  }
+
+  .price-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stock-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #555;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .filter-actions {
+    display: grid;
+    gap: 10px;
+  }
+
+  .filter-btn,
+  .reset-btn,
+  .search-btn,
+  .card-btn,
+  .card-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 800;
+    transition: 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .filter-btn,
+  .search-btn,
+  .card-btn {
+    background: #111;
+    color: white;
+  }
+
+  .reset-btn,
+  .card-btn-secondary {
+    background: #eef2f5;
+    color: #111;
+  }
+
+  .filter-btn:hover,
+  .reset-btn:hover,
+  .search-btn:hover,
+  .card-btn:hover,
+  .card-btn-secondary:hover {
+    transform: translateY(-1px);
+  }
+
+  .catalog-main-card {
+    padding: 24px;
+  }
+
+  .catalog-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 230px;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .search-form {
+    display: contents;
+  }
+
+  .search-box {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 10px;
+  }
+
+  .catalog-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .product-card {
+    background: #fbfcfd;
+    border: 1px solid #ececec;
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    background: #e7eef5;
+  }
+
+  .product-content {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .product-category {
+    color: #6b7f95;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .product-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .product-desc {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .product-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .product-price {
+    font-size: 22px;
+    font-weight: 900;
+  }
+
+  .stock-badge {
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .stock-ok {
+    background: #edf8ef;
+    color: #207a35;
+  }
+
+  .stock-low {
+    background: #fff8e6;
+    color: #9a6a00;
+  }
+
+  .stock-out {
+    background: #fff1f1;
+    color: #b23a3a;
+  }
+
+  .product-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .card-btn.disabled {
+    background: #d8dde3;
+    color: #777;
+    pointer-events: none;
+  }
+
+  .empty-box {
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 20px;
+    padding: 36px 20px;
+  }
+
+  .empty-box h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .empty-box p {
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 1120px) {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .catalog-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      position: static;
+    }
+
+    .catalog-toolbar {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .products-grid,
+    .product-actions,
+    .price-inputs,
+    .search-box {
+      grid-template-columns: 1fr;
+    }
+
+    .catalog-main-card,
+    .sidebar {
+      padding: 18px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Каталог электроники</h1>
+  <p class="page-subtitle">
+    Выбирайте технику для работы, игр и повседневного использования.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="catalog-page">
+  <div class="container">
+    <section class="catalog-layout">
+      <aside class="sidebar">
+        <h3>Фильтры</h3>
+
+        <form method="get" action="/catalog">
+          <div class="filter-group">
+            <h4>Категория</h4>
+
+            <select name="category" class="sort-select">
+              <option value="">Все категории</option>
+              <option value="Клавиатуры" {% if category == "Клавиатуры" %}selected{% endif %}>Клавиатуры</option>
+              <option value="Мыши" {% if category == "Мыши" %}selected{% endif %}>Мыши</option>
+              <option value="Наушники" {% if category == "Наушники" %}selected{% endif %}>Наушники</option>
+              <option value="Мониторы" {% if category == "Мониторы" %}selected{% endif %}>Мониторы</option>
+              <option value="Аксессуары" {% if category == "Аксессуары" %}selected{% endif %}>Аксессуары</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <h4>Цена</h4>
+
+            <div class="price-inputs">
+              <input type="number" name="min_price" placeholder="от" value="{{ min_price }}">
+              <input type="number" name="max_price" placeholder="до" value="{{ max_price }}">
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h4>Наличие</h4>
+
+            <label class="stock-check">
+              <input type="checkbox" name="in_stock" value="1" {% if in_stock %}checked{% endif %}>
+              <span>Только в наличии</span>
+            </label>
+          </div>
+
+          <input type="hidden" name="search" value="{{ search }}">
+          <input type="hidden" name="sort" value="{{ sort }}">
+
+          <div class="filter-actions">
+            <button type="submit" class="filter-btn">Применить</button>
+            <a href="/catalog" class="reset-btn">Сбросить фильтры</a>
+          </div>
+        </form>
+      </aside>
+
+      <section class="catalog-main-card">
+        <div class="catalog-toolbar">
+          <form method="get" action="/catalog" class="search-form">
+            <div class="search-box">
+              <input type="text" name="search" placeholder="Поиск по названию товара" value="{{ search }}">
+              <button class="search-btn" type="submit">Найти</button>
+            </div>
+
+            <div class="sort-wrap">
+              <select name="sort" class="sort-select" onchange="this.form.submit()">
+                <option value="default" {% if sort == "default" %}selected{% endif %}>Сортировка: по умолчанию</option>
+                <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>По цене ↑</option>
+                <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>По цене ↓</option>
+                <option value="name_asc" {% if sort == "name_asc" %}selected{% endif %}>По названию</option>
+              </select>
+            </div>
+
+            <input type="hidden" name="category" value="{{ category }}">
+            <input type="hidden" name="min_price" value="{{ min_price }}">
+            <input type="hidden" name="max_price" value="{{ max_price }}">
+
+            {% if in_stock %}
+              <input type="hidden" name="in_stock" value="1">
+            {% endif %}
+          </form>
+        </div>
+
+        <div class="catalog-info">
+          <span>Найдено товаров: {{ products|length }}</span>
+          <span>
+            {% if search %}
+              Поиск: "{{ search }}"
+            {% elif category %}
+              Категория: {{ category }}
+            {% else %}
+              Категория: электроника и аксессуары
+            {% endif %}
+          </span>
+        </div>
+
+        {% if products %}
+          <div class="products-grid">
+            {% for product in products %}
+              <article class="product-card">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+
+                <div class="product-content">
+                  <div class="product-category">{{ product.category }}</div>
+                  <h3 class="product-title">{{ product.name }}</h3>
+                  <p class="product-desc">{{ product.description }}</p>
+
+                  <div class="product-meta">
+                    <div class="product-price">{{ product.price }} ₽</div>
+
+                    {% if product.stock == 0 %}
+                      <span class="stock-badge stock-out">Нет в наличии</span>
+                    {% elif product.stock <= 5 %}
+                      <span class="stock-badge stock-low">Мало</span>
+                    {% else %}
+                      <span class="stock-badge stock-ok">В наличии</span>
+                    {% endif %}
+                  </div>
+
+                  <div class="product-actions">
+                    <a href="/product/{{ product.id }}" class="card-btn-secondary">Подробнее</a>
+
+                    {% if product.stock > 0 %}
+                      <a href="/add-to-cart/{{ product.id }}" class="card-btn">В корзину</a>
+                    {% else %}
+                      <span class="card-btn disabled">Нет товара</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-box">
+            <h3>Ничего не найдено</h3>
+            <p>Попробуйте изменить параметры поиска или сбросить фильтры.</p>
+            <a href="/catalog" class="reset-btn">Сбросить фильтры</a>
+          </div>
+        {% endif %}
+      </section>
+    </section>
+  </div>
+</section>
+{% endblock %}

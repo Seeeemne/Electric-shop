@@ -1,0 +1,430 @@
+{% extends "base.html" %}
+
+{% block title %}Корзина — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  .cart-page {
+    padding: 42px 0 80px;
+  }
+
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 1.35fr 0.65fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .cart-card,
+  .summary-card,
+  .empty-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+    padding: 26px;
+  }
+
+  .cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .cart-header h2,
+  .summary-title,
+  .empty-title {
+    font-size: 30px;
+    font-weight: 800;
+  }
+
+  .cart-header span {
+    color: #666;
+    font-size: 15px;
+  }
+
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 140px 1fr 170px;
+    gap: 20px;
+    border: 1px solid #ececec;
+    border-radius: 20px;
+    padding: 16px;
+    background: #fbfcfd;
+  }
+
+  .cart-item-image {
+    width: 140px;
+    height: 125px;
+    object-fit: cover;
+    border-radius: 16px;
+    background: #e7eef5;
+  }
+
+  .item-content {
+    min-width: 0;
+  }
+
+  .item-category {
+    color: #6b7f95;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .item-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .item-desc {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+
+  .quantity-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 1px solid #e1e1e1;
+    border-radius: 14px;
+    padding: 6px;
+    margin-bottom: 14px;
+  }
+
+  .qty-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #eef2f5;
+    color: #111;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    transition: 0.2s ease;
+  }
+
+  .qty-btn:hover {
+    background: #111;
+    color: white;
+  }
+
+  .qty-value {
+    min-width: 28px;
+    text-align: center;
+    font-weight: 800;
+  }
+
+  .item-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .item-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2f5;
+    color: #111;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.2s ease;
+  }
+
+  .remove-link {
+    background: #fff1f1;
+    color: #b23a3a;
+  }
+
+  .item-link:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+  }
+
+  .item-price-block {
+    text-align: right;
+    border-left: 1px solid #ececec;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .item-price-label {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .item-price {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 14px;
+  }
+
+  .item-subtotal {
+    font-size: 24px;
+    font-weight: 900;
+  }
+
+  .summary-card {
+    position: sticky;
+    top: 20px;
+  }
+
+  .summary-title {
+    margin-bottom: 20px;
+  }
+
+  .summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    color: #555;
+    font-size: 16px;
+  }
+
+  .summary-row.total {
+    border-top: 1px solid #e5e5e5;
+    padding-top: 14px;
+    margin-top: 4px;
+    color: #111;
+    font-weight: 900;
+    font-size: 22px;
+  }
+
+  .summary-btn,
+  .secondary-btn,
+  .danger-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 800;
+    transition: 0.2s ease;
+    margin-bottom: 12px;
+    border: none;
+  }
+
+  .summary-btn {
+    background: #111;
+    color: white;
+  }
+
+  .secondary-btn {
+    background: #eef2f5;
+    color: #111;
+  }
+
+  .danger-btn {
+    background: #fff1f1;
+    color: #b23a3a;
+  }
+
+  .summary-btn:hover,
+  .secondary-btn:hover,
+  .danger-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .summary-note {
+    margin-top: 10px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .empty-card {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .empty-title {
+    margin-bottom: 12px;
+  }
+
+  .empty-text {
+    color: #666;
+    font-size: 17px;
+    margin-bottom: 24px;
+  }
+
+  .empty-card .summary-btn {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1040px) {
+    .cart-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .summary-card {
+      position: static;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .cart-item {
+      grid-template-columns: 1fr;
+    }
+
+    .cart-item-image {
+      width: 100%;
+      height: 220px;
+    }
+
+    .item-price-block {
+      text-align: left;
+      border-left: none;
+      border-top: 1px solid #ececec;
+      padding-left: 0;
+      padding-top: 16px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .cart-card,
+    .summary-card,
+    .empty-card {
+      padding: 20px;
+    }
+
+    .cart-header h2,
+    .summary-title,
+    .empty-title {
+      font-size: 26px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Корзина</h1>
+  <p class="page-subtitle">
+    Проверьте выбранные товары, измените количество и переходите к оформлению заказа.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="cart-page">
+  <div class="container">
+    {% if cart_items %}
+      <section class="cart-layout">
+        <div class="cart-card">
+          <div class="cart-header">
+            <h2>Товары в корзине</h2>
+            <span>Всего товаров: {{ total_quantity }}</span>
+          </div>
+
+          <div class="cart-items">
+            {% for item in cart_items %}
+              {% set product = item.product %}
+
+              <article class="cart-item">
+                <img class="cart-item-image" src="{{ product.image }}" alt="{{ product.name }}" />
+
+                <div class="item-content">
+                  <div class="item-category">{{ product.category }}</div>
+                  <h3 class="item-title">{{ product.name }}</h3>
+                  <p class="item-desc">{{ product.description }}</p>
+
+                  <div class="quantity-box">
+                    <a href="/cart/decrease/{{ product.id }}" class="qty-btn">−</a>
+                    <div class="qty-value">{{ item.quantity }}</div>
+                    <a href="/cart/increase/{{ product.id }}" class="qty-btn">+</a>
+                  </div>
+
+                  <div class="item-controls">
+                    <a href="/product/{{ product.id }}" class="item-link">Подробнее</a>
+                    <a href="/remove-from-cart/{{ product.id }}" class="item-link remove-link">Удалить</a>
+                  </div>
+                </div>
+
+                <div class="item-price-block">
+                  <div class="item-price-label">Цена за 1 шт.</div>
+                  <div class="item-price">{{ product.price }} ₽</div>
+
+                  <div class="item-price-label">Сумма</div>
+                  <div class="item-subtotal">{{ item.subtotal }} ₽</div>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </div>
+
+        <aside class="summary-card">
+          <h2 class="summary-title">Итог заказа</h2>
+
+          <div class="summary-list">
+            <div class="summary-row">
+              <span>Товаров</span>
+              <span>{{ total_quantity }}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Позиций</span>
+              <span>{{ cart_items|length }}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Доставка</span>
+              <span>Бесплатно</span>
+            </div>
+
+            <div class="summary-row total">
+              <span>К оплате</span>
+              <span>{{ total }} ₽</span>
+            </div>
+          </div>
+
+          <a href="/checkout" class="summary-btn">Оформить заказ</a>
+          <a href="/catalog" class="secondary-btn">Продолжить покупки</a>
+          <a href="/clear-cart" class="danger-btn">Очистить корзину</a>
+
+          <p class="summary-note">
+            Корзина поддерживает изменение количества товаров.
+          </p>
+        </aside>
+      </section>
+    {% else %}
+      <section class="empty-card">
+        <h2 class="empty-title">Корзина пуста</h2>
+        <p class="empty-text">
+          Вы ещё не добавили товары. Перейдите в каталог и выберите технику для покупки.
+        </p>
+
+        <a href="/catalog" class="summary-btn">Перейти в каталог</a>
+      </section>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

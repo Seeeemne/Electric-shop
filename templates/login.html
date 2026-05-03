@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Вход — Кулон{% endblock %}
+
+{% block extra_head %}
+<style>
+  .auth-section {
+    padding: 42px 0 80px;
+  }
+
+  .auth-layout {
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 28px;
+    align-items: stretch;
+  }
+
+  .auth-info,
+  .auth-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+  }
+
+  .auth-info {
+    padding: 34px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
+  }
+
+  .auth-info h2 {
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+
+  .auth-info p {
+    font-size: 17px;
+    color: #555;
+    max-width: 660px;
+    margin-bottom: 26px;
+  }
+
+  .benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .benefit-card {
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .benefit-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .benefit-card p {
+    font-size: 14px;
+    margin: 0;
+    color: #666;
+  }
+
+  .auth-card {
+    padding: 32px;
+  }
+
+  .auth-card h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .card-subtitle {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    border: 1px solid #dddddd;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px;
+    outline: none;
+  }
+
+  .form-input:focus {
+    border-color: #8aa5bf;
+    background: white;
+  }
+
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 22px;
+    flex-wrap: wrap;
+  }
+
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .forgot-link {
+    color: #315b8b;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .auth-btn,
+  .secondary-btn {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  .auth-btn {
+    background: #111;
+    color: white;
+  }
+
+  .secondary-btn {
+    margin-top: 12px;
+    background: #eef2f5;
+    color: #111;
+  }
+
+  .auth-btn:hover,
+  .secondary-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .divider {
+    margin: 24px 0;
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+  }
+
+  .register-text {
+    text-align: center;
+    color: #555;
+    font-size: 15px;
+  }
+
+  .register-text a {
+    color: #315b8b;
+    font-weight: 800;
+  }
+
+  .error-box {
+    background: #fff1f1;
+    color: #b23a3a;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 1120px) {
+    .auth-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .benefits {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .auth-card,
+    .auth-info {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Вход в аккаунт</h1>
+  <p class="page-subtitle">
+    Войдите в личный кабинет, чтобы просматривать корзину, оформлять заказы и отслеживать покупки.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<main class="auth-section">
+  <div class="container">
+    <section class="auth-layout">
+      <div class="auth-info">
+        <h2>Добро пожаловать в «Кулон»</h2>
+        <p>
+          После входа в аккаунт пользователь получает доступ к корзине, оформлению заказа,
+          истории покупок и более удобной работе с каталогом товаров.
+        </p>
+
+        <div class="benefits">
+          <article class="benefit-card">
+            <h3>Корзина и заказы</h3>
+            <p>Сохраняйте выбранные товары и быстро переходите к оформлению покупки.</p>
+          </article>
+
+          <article class="benefit-card">
+            <h3>Личный кабинет</h3>
+            <p>Просматривайте историю заказов, статусы покупок и основные данные профиля.</p>
+          </article>
+
+          <article class="benefit-card">
+            <h3>Быстрый доступ</h3>
+            <p>После авторизации не нужно заново вводить данные при переходе между страницами.</p>
+          </article>
+
+          <article class="benefit-card">
+            <h3>Удобство покупки</h3>
+            <p>Сайт становится персональным: пользователь может проще выбирать технику.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <h2>Вход</h2>
+        <p class="card-subtitle">Введите данные своей учетной записи, чтобы продолжить.</p>
+
+        <form method="post">
+          {% if error %}
+            <div class="error-box">{{ error }}</div>
+          {% endif %}
+
+          <div class="form-group">
+            <label class="form-label" for="email">Электронная почта</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="Введите email">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Пароль</label>
+            <input class="form-input" type="password" id="password" name="password" placeholder="Введите пароль">
+          </div>
+
+          <div class="form-row">
+            <label class="remember">
+              <input type="checkbox" name="remember">
+              <span>Запомнить меня</span>
+            </label>
+            <a href="#" class="forgot-link">Забыли пароль?</a>
+          </div>
+
+          <button type="submit" class="auth-btn">Войти</button>
+          <a href="/catalog" class="secondary-btn">Вернуться в каталог</a>
+        </form>
+
+        <div class="divider">или</div>
+
+        <p class="register-text">
+          У вас ещё нет аккаунта? <a href="/register">Зарегистрироваться</a>
+        </p>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

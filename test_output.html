@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог — Кулон</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f4f4;
+            color: #111;
+            line-height: 1.5;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .topbar {
+            background:
+                radial-gradient(circle at top right, #aee8ff 0%, rgba(174, 232, 255, 0.55) 18%, transparent 38%),
+                linear-gradient(135deg, #74839d 0%, #8aa5bf 45%, #d2ebf7 100%);
+            padding: 22px 0 34px;
+            color: white;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            color: rgba(255, 255, 255, 0.92);
+            font-size: 16px;
+        }
+
+        .page-hero {
+            padding: 48px 0 10px;
+        }
+
+        .page-title {
+            font-size: clamp(34px, 5vw, 52px);
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            max-width: 760px;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        main {
+            min-height: 60vh;
+        }
+
+        footer {
+            background:
+                radial-gradient(circle at top right, rgba(170, 235, 255, 0.95) 0%, rgba(170, 235, 255, 0.4) 20%, transparent 44%),
+                linear-gradient(135deg, #6f87a1 0%, #90b2c8 55%, #8fdaff 100%);
+            color: white;
+            padding: 70px 0 40px;
+            margin-top: 80px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+            gap: 28px;
+        }
+
+        .footer-brand h3 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 240px;
+        }
+
+        .footer-column h4 {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.86);
+        }
+
+        .footer-bottom {
+            margin-top: 40px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 14px;
+        }
+
+        @media (max-width: 1120px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    
+</head>
+<body>
+    <section class="topbar">
+        <div class="container">
+            <header class="navbar">
+                <a href="/" class="logo">Кулон</a>
+                <nav class="nav-links">
+                    <a href="/">Главная</a>
+                    <a href="/catalog">Каталог</a>
+                    <a href="/cart">Корзина</a>
+                    <a href="/profile">Профиль</a>
+                </nav>
+            </header>
+
+            
+<div class="page-hero">
+  <h1 class="page-title">Каталог</h1>
+  <p class="page-subtitle">Все товары магазина в одном месте.</p>
+</div>
+
+        </div>
+    </section>
+
+    <main>
+        
+<div class="container" style="padding: 42px 0 80px;">
+  <h2>Каталог товаров</h2>
+  <p>Выберите категорию и посмотрите доступные товары.</p>
+</div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>Кулон</h3>
+                    <p>Интернет-магазин электроники для работы, игр и повседневной жизни.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Каталог</h4>
+                    <ul>
+                        <li>Клавиатуры</li>
+                        <li>Мыши</li>
+                        <li>Наушники</li>
+                        <li>Мониторы</li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Покупателю</h4>
+                    <ul>
+                        <li>Каталог товаров</li>
+                        <li>Корзина</li>
+                        <li>Оформление заказа</li>
+                        <li>Профиль</li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li>О магазине</li>
+                        <li>Доставка</li>
+                        <li>Оплата</li>
+                        <li>Контакты</li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Поддержка</h4>
+                    <ul>
+                        <li>Помощь</li>
+                        <li>Обратная связь</li>
+                        <li>GitHub проекта</li>
+                        <li>Авторы</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                © 2026 Кулон. Учебный проект интернет-магазина электроники.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

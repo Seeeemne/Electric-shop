@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block title %}Пользователи — панель администратора{% endblock %}
+
+{% block extra_head %}
+<style>
+  .admin-page {
+    padding: 42px 0 80px;
+  }
+
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .admin-sidebar,
+  .admin-main {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+  }
+
+  .admin-sidebar {
+    padding: 24px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eef5ff;
+    color: #315b8b;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .admin-sidebar h2 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .admin-sidebar p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .sidebar-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sidebar-menu a {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    font-weight: 700;
+    color: #222;
+    transition: 0.2s ease;
+  }
+
+  .sidebar-menu a.active {
+    background: #111;
+    color: white;
+    border-color: #111;
+  }
+
+  .sidebar-menu a:hover {
+    transform: translateY(-1px);
+  }
+
+  .admin-main {
+    padding: 24px;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar h2 {
+    font-size: 30px;
+    font-weight: 800;
+  }
+
+  .secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2f5;
+    color: #111;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 800;
+    transition: 0.2s ease;
+  }
+
+  .secondary-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 760px;
+  }
+
+  th,
+  td {
+    padding: 16px 14px;
+    border-bottom: 1px solid #ececec;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    color: #666;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    font-size: 15px;
+  }
+
+  .user-name {
+    font-size: 17px;
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+
+  .user-subtext {
+    color: #666;
+    font-size: 13px;
+  }
+
+  .role-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .role-admin {
+    background: #eef5ff;
+    color: #315b8b;
+  }
+
+  .role-user {
+    background: #edf8ef;
+    color: #207a35;
+  }
+
+  .empty-box {
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 20px;
+    padding: 36px 20px;
+    color: #666;
+    font-weight: 700;
+  }
+
+  .bottom-note {
+    color: #666;
+    font-size: 14px;
+    margin-top: 18px;
+  }
+
+  @media (max-width: 920px) {
+    .admin-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .admin-sidebar,
+    .admin-main {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">Пользователи</h1>
+  <p class="page-subtitle">
+    Здесь отображаются все зарегистрированные пользователи магазина.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+  <div class="container">
+    <section class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-badge">● Панель администратора</div>
+
+        <h2>Управление магазином</h2>
+        <p>Раздел для просмотра зарегистрированных пользователей.</p>
+
+        <ul class="sidebar-menu">
+          <li><a href="/admin/products">Товары</a></li>
+          <li><a href="/admin/products/add">Добавить товар</a></li>
+          <li><a href="/admin/categories">Категории</a></li>
+          <li><a href="/admin/categories/add">Добавить категорию</a></li>
+          <li><a href="/admin/orders">Заказы</a></li>
+          <li><a href="/admin/users" class="active">Пользователи</a></li>
+          <li><a href="/profile">Профиль</a></li>
+        </ul>
+      </aside>
+
+      <section class="admin-main">
+        <div class="toolbar">
+          <h2>Список пользователей</h2>
+          <a href="/admin/users" class="secondary-btn">Обновить</a>
+        </div>
+
+        {% if users %}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Пользователь</th>
+                  <th>Email</th>
+                  <th>Роль</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for user in users %}
+                  <tr>
+                    <td>{{ user.id }}</td>
+
+                    <td>
+                      <div class="user-name">{{ user.name }}</div>
+                      <div class="user-subtext">
+                        {% if user.is_admin %}
+                          Пользователь системы
+                        {% else %}
+                          Покупатель магазина
+                        {% endif %}
+                      </div>
+                    </td>
+
+                    <td>{{ user.email }}</td>
+
+                    <td>
+                      {% if user.is_admin %}
+                        <span class="role-badge role-admin">● Администратор</span>
+                      {% else %}
+                        <span class="role-badge role-user">● Пользователь</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="empty-box">
+            Пользователей пока нет.
+          </div>
+        {% endif %}
+
+        <p class="bottom-note">Всего пользователей: {{ users|length }}</p>
+      </section>
+    </section>
+  </div>
+</section>
+{% endblock %}
