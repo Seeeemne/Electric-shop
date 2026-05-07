@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}API сайта — панель администратора{% endblock %}
+
+{% block extra_head %}
+<style>
+  .admin-page {
+    padding: 42px 0 80px;
+  }
+
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .admin-sidebar,
+  .admin-main {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
+  }
+
+  .admin-sidebar {
+    padding: 24px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eef5ff;
+    color: #315b8b;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .admin-sidebar h2 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .admin-sidebar p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .sidebar-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-left: 0;
+  }
+
+  .sidebar-menu a {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    font-weight: 700;
+    color: #222;
+    transition: 0.2s ease;
+  }
+
+  .sidebar-menu a.active {
+    background: #111;
+    color: white;
+    border-color: #111;
+  }
+
+  .sidebar-menu a:hover {
+    transform: translateY(-1px);
+  }
+
+  .admin-main {
+    padding: 24px;
+  }
+
+  .section-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .section-subtitle {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+
+  .api-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .api-card {
+    background: #f8fafc;
+    border: 1px solid #ececec;
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  .api-card h3 {
+    font-size: 21px;
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+
+  .api-card p {
+    color: #666;
+    margin-bottom: 14px;
+  }
+
+  .api-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #111;
+    color: white;
+    border-radius: 12px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-weight: 800;
+    transition: 0.2s ease;
+  }
+
+  .api-link:hover {
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .api-path {
+    display: block;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    color: #333;
+    font-family: monospace;
+    font-size: 14px;
+  }
+
+  @media (max-width: 920px) {
+    .admin-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .admin-main,
+    .admin-sidebar {
+      padding: 20px;
+    }
+
+    .api-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block hero %}
+<div class="page-hero">
+  <h1 class="page-title">API сайта</h1>
+  <p class="page-subtitle">
+    Быстрый доступ к JSON-маршрутам интернет-магазина.
+  </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+  <div class="container">
+    <section class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-badge">● Панель администратора</div>
+
+        <h2>Управление магазином</h2>
+        <p>Раздел со ссылками на API сайта.</p>
+
+        <ul class="sidebar-menu">
+          <li><a href="/admin/products">Товары</a></li>
+          <li><a href="/admin/products/add">Добавить товар</a></li>
+          <li><a href="/admin/categories">Категории</a></li>
+          <li><a href="/admin/categories/add">Добавить категорию</a></li>
+          <li><a href="/admin/orders">Заказы</a></li>
+          <li><a href="/admin/users">Пользователи</a></li>
+          <li><a href="/admin/api" class="active">API сайта</a></li>
+          <li><a href="/profile">Профиль</a></li>
+        </ul>
+      </aside>
+
+      <section class="admin-main">
+        <h2 class="section-title">JSON API</h2>
+        <p class="section-subtitle">
+          Эти ссылки можно открыть в браузере. Ответ возвращается в формате JSON.
+        </p>
+
+        <div class="api-grid">
+          <article class="api-card">
+            <h3>Все товары</h3>
+            <p>Список товаров с названием, ценой, брендом, описанием и остатком.</p>
+            <code class="api-path">/api/products</code>
+            <a href="/api/products" target="_blank" class="api-link">Открыть</a>
+          </article>
+
+          <article class="api-card">
+            <h3>Один товар</h3>
+            <p>Подробная информация о товаре по его ID.</p>
+            <code class="api-path">/api/products/1</code>
+            <a href="/api/products/1" target="_blank" class="api-link">Открыть</a>
+          </article>
+
+          <article class="api-card">
+            <h3>Категории</h3>
+            <p>Список категорий и количество товаров в каждой категории.</p>
+            <code class="api-path">/api/categories</code>
+            <a href="/api/categories" target="_blank" class="api-link">Открыть</a>
+          </article>
+
+          <article class="api-card">
+            <h3>Корзина</h3>
+            <p>Текущая корзина пользователя из сессии.</p>
+            <code class="api-path">/api/cart</code>
+            <a href="/api/cart" target="_blank" class="api-link">Открыть</a>
+          </article>
+
+          <article class="api-card">
+            <h3>Заказы</h3>
+            <p>Список заказов. Доступно только администратору.</p>
+            <code class="api-path">/api/orders</code>
+            <a href="/api/orders" target="_blank" class="api-link">Открыть</a>
+          </article>
+
+          <article class="api-card">
+            <h3>Один заказ</h3>
+            <p>Подробная информация о заказе по ID. Доступно только администратору.</p>
+            <code class="api-path">/api/orders/1</code>
+            <a href="/api/orders/1" target="_blank" class="api-link">Открыть</a>
+          </article>
+        </div>
+      </section>
+    </section>
+  </div>
+</section>
+{% endblock %}

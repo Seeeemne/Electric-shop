@@ -26,6 +26,7 @@ from models_users import (
     get_all_users,
     create_user,
     verify_user_password,
+    update_user_password,
 )
 
 from models_orders import (
@@ -442,6 +443,37 @@ def login():
     return render_template("login.html", error=error)
 
 
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    error = ""
+    success = ""
+
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+        password_repeat = request.form.get("password_repeat", "").strip()
+
+        if not email or not password or not password_repeat:
+            error = "Заполните все поля."
+        elif password != password_repeat:
+            error = "Пароли не совпадают."
+        elif len(password) < 6:
+            error = "Пароль должен быть не короче 6 символов."
+        else:
+            updated = update_user_password(email, password)
+
+            if updated:
+                success = "Пароль успешно изменён. Теперь вы можете войти."
+            else:
+                error = "Пользователь с такой почтой не найден."
+
+    return render_template(
+        "forgot_password.html",
+        error=error,
+        success=success,
+    )
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     error = ""
@@ -850,6 +882,11 @@ def admin_users():
         "admin_users.html",
         users=users,
     )
+
+@app.route("/admin/api")
+@admin_required
+def admin_api():
+    return render_template("admin_api.html")
 
 
 @app.route("/admin/categories")

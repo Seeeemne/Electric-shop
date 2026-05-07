@@ -37,3 +37,14 @@ def verify_user_password(user, password):
         return False
 
     return check_password_hash(user.password, password)
+
+def update_user_password(email, new_password):
+    user = get_user_by_email(email)
+
+    if user is None:
+        return False
+
+    user.password = generate_password_hash(new_password)
+    db.session.commit()
+
+    return True
